@@ -1,4 +1,4 @@
-package entityBeans;
+package entityBeans.impl;
 
 import java.util.Set;
 
@@ -7,11 +7,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import entityBeans.IContact;
+import entityBeans.IContactGroup;
+
 @Entity
-public class ContactGroup{
+public class ContactGroup implements IContactGroup {
 	private long groupId;
 	private String groupName;
-	private Set<Contact> contacts;
+	private Set<IContact> contacts;
 
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	public long getGroupId() {
@@ -28,10 +31,10 @@ public class ContactGroup{
 		this.groupName = groupName;
 	}
 	
-	public Set<Contact> getContacts() {
+	public Set<IContact> getContacts() {
 		return contacts;
 	}
-	public void setContacts(Set<Contact> contacts) {
+	public void setContacts(Set<IContact> contacts) {
 		this.contacts = contacts;
 	}	
 }

@@ -1,4 +1,4 @@
-package entityBeans;
+package entityBeans.impl;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

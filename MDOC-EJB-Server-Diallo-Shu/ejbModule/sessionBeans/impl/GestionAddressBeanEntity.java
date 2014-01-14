@@ -5,7 +5,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import sessionBeans.GestionAddressRemote;
-import entityBeans.Address;
+import entityBeans.IAddress;
 
 @Stateless(mappedName="AddressBeanEntity")
 public class GestionAddressBeanEntity implements GestionAddressRemote {
@@ -13,10 +13,10 @@ public class GestionAddressBeanEntity implements GestionAddressRemote {
 	@PersistenceContext
 	EntityManager em;
 	
-	public Address getAddressById(long id){	
-		Address address = null;
+	public IAddress getAddressById(long id){	
+		IAddress address = null;
 		try{
-			address = em.find(Address.class, id);
+			address = em.find(IAddress.class, id);
 		} catch(Exception e){
 			e.printStackTrace();
 		}

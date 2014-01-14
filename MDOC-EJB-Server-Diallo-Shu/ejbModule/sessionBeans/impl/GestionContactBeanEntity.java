@@ -9,15 +9,17 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import entityBeans.Address;
-import entityBeans.Contact;
-import entityBeans.ContactGroup;
-import entityBeans.Entreprise;
-import entityBeans.PhoneNumber;
-
 import sessionBeans.GestionContactGroupRemote;
 import sessionBeans.GestionContactRemote;
 import sessionBeans.GestionPhoneNumberRemote;
+import entityBeans.IAddress;
+import entityBeans.IContact;
+import entityBeans.IContactGroup;
+import entityBeans.IEntreprise;
+import entityBeans.IPhoneNumber;
+import entityBeans.impl.Address;
+import entityBeans.impl.Contact;
+import entityBeans.impl.Entreprise;
 
 @Stateless(mappedName="ContactBeanEntity")
 public class GestionContactBeanEntity implements GestionContactRemote {
@@ -25,14 +27,14 @@ public class GestionContactBeanEntity implements GestionContactRemote {
 	@PersistenceContext
 	EntityManager em;
 
-	public boolean createContact(String fname, String lname, String email, Address address, Set<PhoneNumber> profiles, int numSiret){		
+	public boolean createContact(String fname, String lname, String email, IAddress address, Set<IPhoneNumber> profiles, int numSiret){		
 		try {
-			Contact c;
+			IContact c;
 			if(numSiret <= 0){
 				c = new Contact();
 			} else {
 				c = new Entreprise();
-				((Entreprise)c).setNumSiret(numSiret);
+				((IEntreprise)c).setNumSiret(numSiret);
 			}
 
 			if(address != null){
@@ -46,7 +48,7 @@ public class GestionContactBeanEntity implements GestionContactRemote {
 			em.persist(c);
 
 			if(profiles != null){
-				for(PhoneNumber profile : profiles){
+				for(IPhoneNumber profile : profiles){
 					profile.setContact(c);
 					c.getProfiles().add(profile);
 					em.persist(profile);
@@ -60,7 +62,7 @@ public class GestionContactBeanEntity implements GestionContactRemote {
 		}
 	}
 
-	public boolean updateContact(Contact c, String fname, String lname, String email, 
+	public boolean updateContact(IContact c, String fname, String lname, String email, 
 			String street, String zip, String city, String country, String home, String office, String mobile, int siretnum){
 		try{
 			c.setFirstname(fname);
@@ -75,12 +77,12 @@ public class GestionContactBeanEntity implements GestionContactRemote {
 			checkAndAdd("mobile", mobile, c, c.getProfiles());
 
 			if(siretnum == -1){
-				if(c instanceof Entreprise){
+				if(c instanceof IEntreprise){
 					return false;
 				}
 			} else {
-				if(c instanceof Entreprise){
-					((Entreprise)c).setNumSiret(siretnum);
+				if(c instanceof IEntreprise){
+					((IEntreprise)c).setNumSiret(siretnum);
 				} else {
 					return false;
 				}
@@ -105,14 +107,14 @@ public class GestionContactBeanEntity implements GestionContactRemote {
 		}
 
 		try{
-			Contact c = em.find(Contact.class, idNum);
+			IContact c = em.find(IContact.class, idNum);
 			if(c == null){
 				return false;
 			}
 			c.getProfiles().clear();
 
 			GestionContactGroupRemote gestionContactGroupRemote = new GestionContactGroupBeanEntity();
-			for(ContactGroup cg : c.getBooks()){
+			for(IContactGroup cg : c.getBooks()){
 				cg.getContacts().remove(c);
 				if(cg.getContacts().size() == 0){
 					gestionContactGroupRemote.deleteContactGroup(cg);
@@ -128,7 +130,7 @@ public class GestionContactBeanEntity implements GestionContactRemote {
 		}
 	}
 
-	public List searchContact(String fname, String lname, String email, Address address,
+	public List searchContact(String fname, String lname, String email, IAddress address,
 			String home, String office, String mobile){
 		try{
 			StringBuffer s = new StringBuffer();
@@ -170,9 +172,9 @@ public class GestionContactBeanEntity implements GestionContactRemote {
 			GestionPhoneNumberRemote gestionPhoneNumberRemote = new GestionPhoneNumberBeanEntity();
 
 			for(int i=0; i<contacts.size(); i++){
-				Contact c = (Contact)(((Object[])contacts.get(i))[0]);
+				IContact c = (IContact)(((Object[])contacts.get(i))[0]);
 
-				List<PhoneNumber> pns = gestionPhoneNumberRemote.getPhoneNumbersByIdContact(c.getId());
+				List<IPhoneNumber> pns = gestionPhoneNumberRemote.getPhoneNumbersByIdContact(c.getId());
 				if((! keep("home", home, pns)) || (! keep("office", office, pns)) || (! keep("mobile", mobile, pns))){
 					toRemove.add(c);
 				}
@@ -199,10 +201,10 @@ public class GestionContactBeanEntity implements GestionContactRemote {
 		}
 	}
 
-	public List<Contact> getAllContacts(){
+	public List<IContact> getAllContacts(){
 		try{
 			Query query = em.createQuery("from Contact c left join fetch c.address address");
-			List<Contact> contacts = query.getResultList();
+			List<IContact> contacts = query.getResultList();
 			return contacts;
 		} catch(Exception e){
 			e.printStackTrace();
@@ -210,9 +212,9 @@ public class GestionContactBeanEntity implements GestionContactRemote {
 		}
 	}
 
-	public List<ContactGroup> getContactGroupByIdContact(String idContact){
+	public List<IContactGroup> getContactGroupByIdContact(String idContact){
 		try{
-			List<ContactGroup> contactGroup = em.createQuery("select elements(c.books) from Contact c where c.id = " + idContact).getResultList();
+			List<IContactGroup> contactGroup = em.createQuery("select elements(c.books) from Contact c where c.id = " + idContact).getResultList();
 
 			return contactGroup;
 		} catch(Exception e){
@@ -224,9 +226,9 @@ public class GestionContactBeanEntity implements GestionContactRemote {
 
 	public boolean generateContacts(){
 		try{
-			List<Contact> contacts = new ArrayList<Contact>();
-			List<Address> addresses = new ArrayList<Address>();
-			List<PhoneNumber> phoneNumbers = new ArrayList<PhoneNumber>();
+			List<IContact> contacts = new ArrayList<IContact>();
+			List<IAddress> addresses = new ArrayList<IAddress>();
+			List<IPhoneNumber> phoneNumbers = new ArrayList<IPhoneNumber>();
 
 			for(int i=0; i<3; i++){
 				contacts.add(new Contact());
@@ -235,7 +237,7 @@ public class GestionContactBeanEntity implements GestionContactRemote {
 			}
 			
 			for(int i=1; i<=9; i++){
-				phoneNumbers.add(new PhoneNumber());
+				phoneNumbers.add(new IPhoneNumber());
 			}
 
 			contacts.get(0).setFirstname("Clayton");
@@ -244,11 +246,11 @@ public class GestionContactBeanEntity implements GestionContactRemote {
 
 			contacts.get(1).setFirstname("Future Life");
 			contacts.get(1).setEmail("contact@futurelife.com");
-			((Entreprise)contacts.get(1)).setNumSiret(999999999);
+			((IEntreprise)contacts.get(1)).setNumSiret(999999999);
 			
 			contacts.get(2).setFirstname("Hello Mdoc");
 			contacts.get(2).setEmail("contact@hellomdoc.com");
-			((Entreprise)contacts.get(2)).setNumSiret(888888888);
+			((IEntreprise)contacts.get(2)).setNumSiret(888888888);
 			
 			addresses.get(0).setStreet("5 Place Jussieu");
 			addresses.get(0).setCity("Paris");
@@ -311,9 +313,9 @@ public class GestionContactBeanEntity implements GestionContactRemote {
 		}
 	}
 
-	private void checkAndAdd(String kind, String number, Contact contact, Set<PhoneNumber> profiles){
+	private void checkAndAdd(String kind, String number, IContact contact, Set<IPhoneNumber> profiles){
 		if(number.equals("")){
-			for(PhoneNumber p : profiles){
+			for(IPhoneNumber p : profiles){
 				if(p.getPhoneKind().equalsIgnoreCase(kind)){
 					em.remove(p);
 					break;
@@ -321,14 +323,14 @@ public class GestionContactBeanEntity implements GestionContactRemote {
 			}
 		} else {
 			boolean add = true;
-			for(PhoneNumber p : profiles){
+			for(IPhoneNumber p : profiles){
 				if(p.getPhoneKind().equalsIgnoreCase(kind)){
 					add = false;
 					p.setPhoneNumber(number);
 				}
 			}
 			if(add){
-				PhoneNumber p = new PhoneNumber();
+				IPhoneNumber p = new IPhoneNumber();
 				p.setPhoneKind(kind);
 				p.setPhoneNumber(number);
 				p.setContact(contact);
@@ -338,7 +340,7 @@ public class GestionContactBeanEntity implements GestionContactRemote {
 		}
 	}
 
-	private boolean keep(String kind, String number, List<PhoneNumber> phoneNumbers){
+	private boolean keep(String kind, String number, List<IPhoneNumber> phoneNumbers){
 		if(number.isEmpty()){
 			return true;
 		}
@@ -346,7 +348,7 @@ public class GestionContactBeanEntity implements GestionContactRemote {
 			return false;
 		}
 		for(Object o : phoneNumbers){
-			PhoneNumber p = (PhoneNumber) o;
+			IPhoneNumber p = (IPhoneNumber) o;
 			if(p.getPhoneKind().equalsIgnoreCase(kind) && 
 					(p.getPhoneNumber().equalsIgnoreCase(number) || (p.getPhoneNumber().contains(number)))){
 				return true;

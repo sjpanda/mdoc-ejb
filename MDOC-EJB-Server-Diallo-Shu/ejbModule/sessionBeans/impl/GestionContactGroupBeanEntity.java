@@ -7,8 +7,9 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import entityBeans.Contact;
-import entityBeans.ContactGroup;
+import entityBeans.IContact;
+import entityBeans.IContactGroup;
+import entityBeans.impl.ContactGroup;
 
 import sessionBeans.GestionContactGroupRemote;
 import sessionBeans.GestionContactRemote;
@@ -21,11 +22,11 @@ public class GestionContactGroupBeanEntity implements GestionContactGroupRemote 
 
 	public boolean createContactGroup(String name , String idContact){		
 		try{
-			ContactGroup c = new ContactGroup();
+			IContactGroup c = new ContactGroup();
 			c.setGroupName(name);
 
 			long idNum = Integer.parseInt(idContact);
-			Contact contact = em.find(Contact.class, idNum);
+			IContact contact = em.find(IContact.class, idNum);
 
 			if(contact == null){
 				System.out.println("Contact " + idContact + " not found");
@@ -44,9 +45,9 @@ public class GestionContactGroupBeanEntity implements GestionContactGroupRemote 
 		}
 	}
 
-	public List<ContactGroup> getAllContactGroup(){
+	public List<IContactGroup> getAllContactGroup(){
 		try{
-			List<ContactGroup> contactGroup = em.createQuery("select c from ContactGroup c ").getResultList();
+			List<IContactGroup> contactGroup = em.createQuery("select c from ContactGroup c ").getResultList();
 			return contactGroup;
 		} catch(Exception e){
 			System.out.println(e.getMessage());
@@ -54,7 +55,7 @@ public class GestionContactGroupBeanEntity implements GestionContactGroupRemote 
 		}
 	}
 
-	public ContactGroup getContactGroupById(String id){
+	public IContactGroup getContactGroupById(String id){
 		try{
 			long idNum = 0;
 			try{
@@ -64,7 +65,7 @@ public class GestionContactGroupBeanEntity implements GestionContactGroupRemote 
 				return null;
 			}
 
-			return em.find(ContactGroup.class, idNum);
+			return em.find(IContactGroup.class, idNum);
 		} catch(Exception e){
 			System.out.println(e.getMessage());
 			return null;
@@ -74,7 +75,7 @@ public class GestionContactGroupBeanEntity implements GestionContactGroupRemote 
 	public boolean addContact(String[] contacts, String idContactGroup){		
 		try{
 			long idNum = Integer.parseInt(idContactGroup);
-			ContactGroup c = em.find(ContactGroup.class, idNum);
+			IContactGroup c = em.find(IContactGroup.class, idNum);
 			if(c == null){
 				System.out.println("Group contact " + idContactGroup + " not found");
 				return false;
@@ -85,7 +86,7 @@ public class GestionContactGroupBeanEntity implements GestionContactGroupRemote 
 			if(contacts != null){
 				for(String idContact : contacts){	
 					long id = Integer.parseInt(idContact);
-					Contact contact = em.find(Contact.class, id);
+					IContact contact = em.find(IContact.class, id);
 					if(contact == null){
 						System.out.println("Cannot find the contact " + idContact);
 						return false;
@@ -105,18 +106,18 @@ public class GestionContactGroupBeanEntity implements GestionContactGroupRemote 
 		}	
 	}
 
-	public List<Contact> getContactsByIdContactGroup(final String idContactGroup){
+	public List<IContact> getContactsByIdContactGroup(final String idContactGroup){
 		try{
 			long id = Integer.parseInt(idContactGroup);
-			ContactGroup contactGroup = em.find(ContactGroup.class, id);
-			return new ArrayList<Contact>(contactGroup.getContacts());
+			IContactGroup contactGroup = em.find(IContactGroup.class, id);
+			return new ArrayList<IContact>(contactGroup.getContacts());
 		} catch(Exception e){
 			System.out.println(e.getMessage());
 			return null;
 		}	
 	}
 
-	public boolean deleteContactGroup(ContactGroup contactGroup){		
+	public boolean deleteContactGroup(IContactGroup contactGroup){		
 		try{
 			em.remove(contactGroup);
 			return true;

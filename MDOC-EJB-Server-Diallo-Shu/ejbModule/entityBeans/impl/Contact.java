@@ -1,4 +1,4 @@
-package entityBeans;
+package entityBeans.impl;
 
 import java.util.Set;
 
@@ -7,15 +7,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import entityBeans.IAddress;
+import entityBeans.IContact;
+import entityBeans.IContactGroup;
+import entityBeans.IPhoneNumber;
+
 @Entity
-public class Contact{
+public class Contact implements IContact {
 	private long id;
 	private String firstname;
 	private String lastname;
 	private String email;
-	private Address address;
-	private Set<PhoneNumber> profiles;
-	private Set<ContactGroup> books;
+	private IAddress address;
+	private Set<IPhoneNumber> profiles;
+	private Set<IContactGroup> books;
 
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	public long getId() {
@@ -46,24 +51,24 @@ public class Contact{
 		this.email = email;
 	}
 	
-	public Address getAddress() {
+	public IAddress getAddress() {
 		return address;
 	}
-	public void setAddress(Address address) {
+	public void setAddress(IAddress address) {
 		this.address = address;
 	}
 	
-	public Set<PhoneNumber> getProfiles() {
+	public Set<IPhoneNumber> getProfiles() {
 		return profiles;
 	}
-	public void setProfiles(Set<PhoneNumber> profiles) {
+	public void setProfiles(Set<IPhoneNumber> profiles) {
 		this.profiles = profiles;
 	}
 	
-	public Set<ContactGroup> getBooks() {
+	public Set<IContactGroup> getBooks() {
 		return books;
 	}
-	public void setBooks(Set<ContactGroup> books) {
+	public void setBooks(Set<IContactGroup> books) {
 		this.books = books;
 	}
 }

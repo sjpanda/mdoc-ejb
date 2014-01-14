@@ -5,7 +5,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import sessionBeans.GestionEntrepriseRemote;
-import entityBeans.Entreprise;
+import entityBeans.IEntreprise;
 
 @Stateless(mappedName="EntrepriseBeanEntity")
 public class GestionEntrepriseBeanEntity implements GestionEntrepriseRemote{
@@ -13,11 +13,11 @@ public class GestionEntrepriseBeanEntity implements GestionEntrepriseRemote{
 	@PersistenceContext
 	EntityManager em;
 	
-	public Entreprise getEntrepriseByIdContact(long idContact){
+	public IEntreprise getEntrepriseByIdContact(long idContact){
 		
-		Entreprise entreprise = null;
+		IEntreprise entreprise = null;
 		try{
-			entreprise = em.find(Entreprise.class, idContact);
+			entreprise = em.find(IEntreprise.class, idContact);
 		} catch(Exception e){
 			e.printStackTrace();
 		}

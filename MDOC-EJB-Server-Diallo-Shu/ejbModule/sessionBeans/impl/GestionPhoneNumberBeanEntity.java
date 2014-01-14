@@ -6,7 +6,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import entityBeans.PhoneNumber;
+import entityBeans.IPhoneNumber;
 
 import sessionBeans.GestionPhoneNumberRemote;
 
@@ -16,9 +16,9 @@ public class GestionPhoneNumberBeanEntity implements GestionPhoneNumberRemote {
 	@PersistenceContext
 	EntityManager em;
 	
-	public List<PhoneNumber> getPhoneNumbersByIdContact(long idContact){
+	public List<IPhoneNumber> getPhoneNumbersByIdContact(long idContact){
 		try{
-			List<PhoneNumber> contacts = em.createQuery("from PhoneNumber p where p.contact.id = " + idContact).getResultList();
+			List<IPhoneNumber> contacts = em.createQuery("from PhoneNumber p where p.contact.id = " + idContact).getResultList();
 			if(contacts.size() <= 0){
 				return null;
 			}
@@ -31,7 +31,7 @@ public class GestionPhoneNumberBeanEntity implements GestionPhoneNumberRemote {
 	
 	public boolean deletePhoneNumber(long id){
 		try{
-			PhoneNumber p = em.find(PhoneNumber.class, id);
+			IPhoneNumber p = em.find(IPhoneNumber.class, id);
 			em.remove(p);
 
 			return true;
