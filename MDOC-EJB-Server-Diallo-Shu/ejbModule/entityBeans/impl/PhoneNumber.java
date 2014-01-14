@@ -5,13 +5,25 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Version;
+
+import entityBeans.IContact;
+import entityBeans.IPhoneNumber;
 
 @Entity
-public class PhoneNumber {
+public class PhoneNumber implements IPhoneNumber {
 	private long id;
+	private int version;
 	private String phoneKind;
 	private String phoneNumber;
-	private Contact contact;
+	private IContact contact;
+	
+	public PhoneNumber(){}
+	
+	public PhoneNumber(String phoneKind, String phoneNumber){
+		this.phoneKind = phoneKind;
+		this.phoneNumber = phoneNumber;
+	}
 	
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	public long getId() {
@@ -21,6 +33,14 @@ public class PhoneNumber {
 		this.id = id;
 	}
 
+	@Version
+	public int getVersion(){
+		return version;
+	}
+	public void setVersion(int version){
+		this.version = version;
+	}
+	
 	public String getPhoneKind() {
 		return phoneKind;
 	}
@@ -36,10 +56,10 @@ public class PhoneNumber {
 	}
 	
 	@ManyToOne
-	public Contact getContact(){
+	public IContact getContact(){
 		return contact;
 	}
-	public void setContact(Contact contact){
+	public void setContact(IContact contact){
 		this.contact = contact;
 	}
 }

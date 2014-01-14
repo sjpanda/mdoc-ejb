@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+
+	<f:metadata>
+		<f:event listener="#{message.init}" type="preRenderView" />
+	</f:metadata>
+
+	<ui:composition template="../../templates/commonLayout.xhtml">
+		<ui:define name="title">
+               Login
+        </ui:define>
+
+		<ui:define name="titleContent">
+                Login
+        </ui:define>
+
+		<ui:define name="content">
+			<f:view>
+				<f:loadBundle basename="properties.messages" var="msg" />
+				<h:form styleClass="form-horizontal">
+					<div class="control-group">
+						<h:outputLabel value="#{msg.user}" styleClass="control-label" />
+						<div class="controls">
+							<h:inputText value="#{user.name}" />
+						</div>
+					</div>
+					<div class="control-group">
+						<h:outputLabel value="#{msg.password}" styleClass="control-label" />
+						<div class="controls">
+							<h:inputSecret value="#{user.password}" />
+						</div>
+					</div>
+					<div class="control-group">
+						<div class="controls">
+							<button type="reset" class="btn">Reset</button>
+							<h:commandButton action="#{user.login}" value="#{msg.login}"
+								styleClass="btn btn-success" style="margin-left: 20px;"></h:commandButton>
+						</div>
+					</div>
+					<h:messages layout="table"></h:messages>
+				</h:form>
+			</f:view>
+		</ui:define>
+
+	</ui:composition>
+
+</h:body>
+
+</html>

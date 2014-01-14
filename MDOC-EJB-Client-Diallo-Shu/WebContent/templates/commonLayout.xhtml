@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<title><ui:insert name="title" /></title>
+	<link rel="stylesheet" href="../../Library/css/bootstrap.css"
+		type="text/css" />
+	<link rel="stylesheet" href="../../Library/css/style1.css"
+		type="text/css" />
+</h:head>
+
+<h:body>
+
+	<div class="container-fluid">
+		<ui:include src="/templates/commonHeader.xhtml" />
+		<div class="row-fluid">
+			<div id="content" class="span12">
+				<div class="well">
+					<h4>
+						<ui:insert name="title" />
+					</h4>
+					<div id="contenu">
+
+                        <h:panelGroup rendered="#{not empty facesContext.messageList}">
+                            <h:panelGroup rendered="#{not message.error}">
+                                <div class="alert alert-success">
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                    <h3>
+                                        <h:outputText value="#{message.title}" />
+                                    </h3>
+                                    <h:outputText value="#{message.description}" />
+                                </div>
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{message.error}">
+                                <div class="alert alert-error">
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                    <h3>
+                                        <h:outputText value="#{message.title}" />
+                                    </h3>
+                                    <h:outputText value="#{message.description}" />
+                                </div>
+                            </h:panelGroup>
+                        </h:panelGroup>
+						<ui:insert name="content" />
+					</div>
+				</div>
+			</div>
+		</div>
+		<ui:include src="/templates/commonFooter.xhtml" />
+	</div>
+
+	<script
+		src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script type="text/javascript" src="../../Library/js/bootstrap.js"></script>
+	<script type="text/javascript"
+		src="../../Library/js/bootstrap-datepicker.js"></script>
+
+</h:body>
+</html>

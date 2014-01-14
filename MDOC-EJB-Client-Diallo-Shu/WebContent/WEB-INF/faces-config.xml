@@ -1,9 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<faces-config
-    xmlns="http://java.sun.com/xml/ns/javaee"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd"
-    version="2.1">
-
+<faces-config version="2.0" xmlns="http://java.sun.com/xml/ns/javaee"
+ xmlns:xi="http://www.w3.org/2001/XInclude"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+ <managed-bean>
+  <managed-bean-name>user</managed-bean-name>
+  <managed-bean-class>models.User</managed-bean-class>
+  <managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ <managed-bean>
+ 	<managed-bean-name>contactController</managed-bean-name>
+ 	<managed-bean-class>controllers.ContactController</managed-bean-class>
+ 	<managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ <managed-bean>
+ 	<managed-bean-name>listContactController</managed-bean-name>
+ 	<managed-bean-class>controllers.ListContactController</managed-bean-class>
+ 	<managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ <managed-bean>
+ 	<managed-bean-name>contactGroupController</managed-bean-name>
+ 	<managed-bean-class>controllers.ContactGroupController</managed-bean-class>
+ 	<managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ <managed-bean>
+ 	<managed-bean-name>message</managed-bean-name>
+ 	<managed-bean-class>models.Message</managed-bean-class>
+ 	<managed-bean-scope>session</managed-bean-scope>
+ </managed-bean>
+ <navigation-rule>
+  <display-name>/Views/Utils//loginView.xhtml</display-name>
+  <from-view-id>/Views/Utils/loginView.xhtml</from-view-id>
+  <navigation-case>
+   <from-outcome>success</from-outcome>
+   <to-view-id>/Views/Utils/mainView.xhtml</to-view-id>
+  </navigation-case>
+ </navigation-rule>
+ <navigation-rule>
+ 	<display-name>Views/Contact/contactView.xhtml</display-name>
+ 	<from-view-id>/Views/Contact/contactView.xhtml</from-view-id>
+ 	<navigation-case>
+ 		<from-outcome>result</from-outcome>
+ 		<to-view-id>/Views/Contact/resultSearchContactView.xhtml</to-view-id>
+ 	</navigation-case>
+ </navigation-rule>
+ <navigation-rule>
+ 	<display-name>templates/commonHeader.xhtml</display-name>
+ 	<from-view-id>/templates/commonHeader.xhtml</from-view-id>
+ 	<navigation-case>
+ 		<from-outcome>success</from-outcome>
+ 		<to-view-id>/Views/Utils/loginView.xhtml</to-view-id>
+ 		<redirect />
+ 	</navigation-case>
+ </navigation-rule>
 </faces-config>

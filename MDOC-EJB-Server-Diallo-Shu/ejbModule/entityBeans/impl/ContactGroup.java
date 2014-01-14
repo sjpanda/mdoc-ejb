@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.Version;
 
 import entityBeans.IContact;
 import entityBeans.IContactGroup;
@@ -14,6 +15,7 @@ import entityBeans.IContactGroup;
 @Entity
 public class ContactGroup implements IContactGroup {
 	private long groupId;
+	private int version;
 	private String groupName;
 	private Set<IContact> contacts;
 
@@ -25,6 +27,14 @@ public class ContactGroup implements IContactGroup {
 		this.groupId = groupId;
 	}
 
+	@Version
+	public int getVersion(){
+		return version;
+	}
+	public void setVersion(int version){
+		this.version = version;
+	}
+	
 	public String getGroupName() {
 		return groupName;
 	}

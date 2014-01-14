@@ -11,6 +11,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Version;
 
 import entityBeans.IAddress;
 import entityBeans.IContact;
@@ -21,6 +22,7 @@ import entityBeans.IPhoneNumber;
 @Inheritance(strategy=InheritanceType.JOINED)
 public class Contact implements IContact {
 	private long id;
+	private int version;
 	private String firstname;
 	private String lastname;
 	private String email;
@@ -34,6 +36,14 @@ public class Contact implements IContact {
 	}
 	public void setId(long id) {
 		this.id = id;
+	}
+	
+	@Version
+	public int getVersion(){
+		return version;
+	}
+	public void setVersion(int version){
+		this.version = version;
 	}
 	
 	public String getFirstname() {

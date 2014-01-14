@@ -20,6 +20,7 @@ import entityBeans.IPhoneNumber;
 import entityBeans.impl.Address;
 import entityBeans.impl.Contact;
 import entityBeans.impl.Entreprise;
+import entityBeans.impl.PhoneNumber;
 
 @Stateless(mappedName="ContactBeanEntity")
 public class GestionContactBeanEntity implements GestionContactRemote {
@@ -187,6 +188,10 @@ public class GestionContactBeanEntity implements GestionContactRemote {
 			return null;
 		}
 	}
+	
+	public IContact instanceContact(){
+		return new Contact();
+	}
 
 	public Object[] getContactById(String id){
 		try{
@@ -237,7 +242,7 @@ public class GestionContactBeanEntity implements GestionContactRemote {
 			}
 			
 			for(int i=1; i<=9; i++){
-				phoneNumbers.add(new IPhoneNumber());
+				phoneNumbers.add(new PhoneNumber());
 			}
 
 			contacts.get(0).setFirstname("Clayton");
@@ -330,7 +335,7 @@ public class GestionContactBeanEntity implements GestionContactRemote {
 				}
 			}
 			if(add){
-				IPhoneNumber p = new IPhoneNumber();
+				IPhoneNumber p = new PhoneNumber();
 				p.setPhoneKind(kind);
 				p.setPhoneNumber(number);
 				p.setContact(contact);

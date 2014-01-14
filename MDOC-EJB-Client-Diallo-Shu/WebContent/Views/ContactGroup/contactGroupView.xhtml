@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<f:metadata>
+	<f:event listener="#{contactGroupController.init}" type="preRenderView" />
+</f:metadata>
+
+<h:body>
+
+	<ui:composition template="../../templates/commonLayout.xhtml">
+
+
+		<ui:define name="title">
+			<h:outputText value="Create contact group"
+				rendered="#{contactGroupController.action eq 'create'}" />
+			<h:outputText value="List contact group"
+				rendered="#{contactGroupController.action eq 'view'}" />
+		</ui:define>
+
+		<ui:define name="content">
+			<f:view>
+				<h:panelGroup
+					rendered="#{contactGroupController.action eq 'create'}">
+					<ul class="breadcrumb">
+						<li><h:outputLink value="../Contact/listContactView.xhtml">
+								<h:outputText value="List contact" />
+								<f:param name="action" value="update" />
+							</h:outputLink> <span class="divider">/</span></li>
+						<li class="active">Create contact group</li>
+					</ul>
+				</h:panelGroup>
+                <h:panelGroup
+                    rendered="#{contactGroupController.action eq 'view'}">
+                    <ul class="breadcrumb">
+                        <li><h:outputLink value="../Contact/listContactView.xhtml">
+                                <h:outputText value="List contact" />
+                                <f:param name="action" value="list" />
+                            </h:outputLink> <span class="divider">/</span></li>
+                        <li class="active">List contact group</li>
+                    </ul>
+                </h:panelGroup>
+				
+				<f:loadBundle basename="properties.messagesContact" var="msg" />
+				<h:form rendered="#{contactGroupController.action eq 'create'}">
+					<h:panelGrid columns="2">
+						<h:outputLabel value="Name contact group :" />
+						<h:inputText
+							value="#{contactGroupController.contactGroup.groupName}" />
+						<h:commandButton action="#{contactGroupController.cancel}"
+							value="Cancel" accesskey="c" styleClass="btn" immediate="true">
+						</h:commandButton>
+						<h:commandButton action="#{contactGroupController.save}"
+							value="Save" accesskey="s" styleClass="btn btn-success">
+						</h:commandButton>
+					</h:panelGrid>
+				</h:form>
+				<h:dataTable value="#{contactGroupController.contactGroups}"
+					var="contactGroup" cellspacing="4"
+					styleClass="table table-bordered table-hover"
+					rendered="#{not empty contactGroupController.contactGroups}">
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="Nom" />
+						</f:facet>
+						<h:outputText value="#{contactGroup.groupName}" />
+					</h:column>
+					<h:column rendered="#{contactGroupController.action eq 'create'}">
+						<f:facet name="header">
+							<h:outputText value="Add contacts" />
+						</f:facet>
+						<h:outputLink value="listContactView.xhtml">
+							<h:outputText value="Add contact" />
+							<f:param name="idContactGroup" value="#{contactGroup.groupId}" />
+						</h:outputLink>
+					</h:column>
+					<h:column rendered="#{contactGroupController.action eq 'view'}">
+						<f:facet name="header">
+							<h:outputText value="View contacts" />
+						</f:facet>
+						<h:outputLink value="listContactView.xhtml">
+							<h:outputText value="View contacts" />
+							<f:param name="idContactGroup" value="#{contactGroup.groupId}" />
+						</h:outputLink>
+					</h:column>
+				</h:dataTable>
+				<h:panelGroup
+					rendered="#{empty contactGroupController.contactGroups}">
+					<div class="alert alert-info">
+						<h3 class="text-center">No contact group found</h3>
+					</div>
+				</h:panelGroup>
+			</f:view>
+		</ui:define>
+
+	</ui:composition>
+
+</h:body>
+
+</html>

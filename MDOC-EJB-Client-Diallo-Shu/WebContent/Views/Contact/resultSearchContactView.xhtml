@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<f:metadata>
+	<f:event listener="#{contactController.init}" type="preRenderView" />
+</f:metadata>
+<h:body>
+
+	<ui:composition template="../../templates/commonLayout.xhtml">
+		<ui:define name="title">
+               Result search
+        </ui:define>
+
+		<ui:define name="content">
+			<f:view>
+				<h:form>
+					<f:loadBundle basename="properties.messagesContact" var="msg" />
+					<table class="table table-bordered table-hover">
+						<tr>
+							<th><h:outputText value="#{msg.firstName}" /></th>
+							<th><h:outputText value="#{msg.lastName}" /></th>
+							<th><h:outputText value="#{msg.email}" /></th>
+						</tr>
+
+						<ui:repeat value="#{contactController.resultSearch}"
+							var="contact">
+							<tr>
+								<td><h:outputLabel value="#{contact.firstname}" /></td>
+								<td><h:outputLabel value="#{contact.lastname}" /></td>
+								<td><h:outputLabel value="#{contact.email}" /></td>
+							</tr>
+						</ui:repeat>
+					</table>
+				</h:form>
+			</f:view>
+		</ui:define>
+
+	</ui:composition>
+
+</h:body>
+
+</html>

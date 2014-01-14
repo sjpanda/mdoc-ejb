@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<f:metadata>
+	<f:event listener="#{listContactController.init}" type="preRenderView" />
+</f:metadata>
+<h:body>
+	<ui:composition template="../../templates/commonLayout.xhtml">
+		<ui:define name="title">
+              List contact
+        </ui:define>
+
+		<ui:define name="content">
+			<f:view>
+				<h:form rendered="#{not empty listContactController.contacts}">
+					<f:loadBundle basename="properties.messagesContact" var="msg" />
+					<table class="table table-bordered table-hover">
+						<tr>
+							<th><h:outputText value="#{msg.firstName}" /></th>
+							<th><h:outputText value="#{msg.lastName}" /></th>
+							<th><h:outputText value="#{msg.email}" /></th>
+							<th><h:outputText value="#{msg.street}" /></th>
+							<th><h:outputText value="#{msg.city}" /></th>
+							<th><h:outputText value="#{msg.zipCode}" /></th>
+							<th><h:outputText value="#{msg.country}" /></th>
+							<h:panelGroup
+								rendered="#{listContactController.action eq 'update'}">
+								<th><h:outputText value="Update" /></th>
+								<th><h:outputText value="Delete" /></th>
+							</h:panelGroup>
+							<th><h:outputText value="Book" /></th>
+						</tr>
+						<ui:repeat value="#{listContactController.contacts}" var="contact">
+							<tr>
+								<td><h:outputLabel value="#{contact.firstname}" /></td>
+								<td><h:outputLabel value="#{contact.lastname}" /></td>
+								<td><h:outputLabel value="#{contact.email}" /></td>
+								<td><h:outputLabel value="#{contact.address.street}" /></td>
+								<td><h:outputLabel value="#{contact.address.city}" /></td>
+								<td><h:outputLabel value="#{contact.address.zip}" /></td>
+								<td><h:outputLabel value="#{contact.address.country}" /></td>
+								<h:panelGroup
+									rendered="#{listContactController.action eq 'update'}">
+									<td><h:outputLink value="contactView.xhtml">
+											<h:outputText value="Update" />
+											<f:param name="action" value="update" />
+											<f:param name="idContact" value="#{contact.id}" />
+										</h:outputLink></td>
+									<td><a href="#myModal#{contact.id}" data-toggle="modal">Delete</a></td>
+									<td><h:outputLink
+											value="../ContactGroup/contactGroupView.xhtml">
+											<h:outputText value="Add book" />
+											<f:param name="idContact" value="#{contact.id}" />
+											<f:param name="action" value="create" />
+										</h:outputLink></td>
+								</h:panelGroup>
+								<h:panelGroup
+									rendered="#{listContactController.action eq 'list'}">
+									<td><h:outputLink
+											value="../ContactGroup/contactGroupView.xhtml">
+											<h:outputText value="List books" />
+											<f:param name="idContact" value="#{contact.id}" />
+											<f:param name="action" value="view" />
+										</h:outputLink></td>
+								</h:panelGroup>
+							</tr>
+							<h:panelGroup
+								rendered="#{listContactController.action eq 'update'}">
+								<div id="myModal#{contact.id}" class="modal hide fade"
+									tabindex="-1">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal">×</button>
+										<h3 id="myModalLabel">Delete contact</h3>
+									</div>
+									<div class="modal-body">
+										<p>
+											Are you sure you want to delete this contact :
+											<h:outputText value="#{contact.firstname}" />
+										</p>
+									</div>
+									<div class="modal-footer">
+										<button class="btn" data-dismiss="modal">Close</button>
+										<h:commandLink action="#{listContactController.delete}"
+											value="Delete" styleClass="btn btn-primary">
+											<f:setPropertyActionListener
+												target="#{listContactController.contact}" value="#{contact}" />
+
+										</h:commandLink>
+
+									</div>
+								</div>
+							</h:panelGroup>
+						</ui:repeat>
+					</table>
+				</h:form>
+				<h:panelGroup rendered="#{empty listContactController.contacts}">
+					<div class="alert alert-info">
+						<h3 class="text-center">No contact found</h3>
+					</div>
+				</h:panelGroup>
+			</f:view>
+		</ui:define>
+
+	</ui:composition>
+
+</h:body>
+
+</html>

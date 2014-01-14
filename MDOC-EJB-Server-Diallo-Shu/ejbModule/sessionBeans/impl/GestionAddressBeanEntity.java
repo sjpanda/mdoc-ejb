@@ -6,13 +6,22 @@ import javax.persistence.PersistenceContext;
 
 import sessionBeans.GestionAddressRemote;
 import entityBeans.IAddress;
+import entityBeans.impl.Address;
 
 @Stateless(mappedName="AddressBeanEntity")
 public class GestionAddressBeanEntity implements GestionAddressRemote {
-	
+
 	@PersistenceContext
 	EntityManager em;
+
+	public IAddress instanceAddress(){		
+		return  new Address();
+	}
 	
+	public IAddress instanceAddress(String street, String city, String zip, String country){		
+		return  new Address(street, city, zip, country);
+	}
+
 	public IAddress getAddressById(long id){	
 		IAddress address = null;
 		try{

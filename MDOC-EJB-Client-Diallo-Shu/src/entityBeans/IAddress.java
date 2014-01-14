@@ -1,10 +1,12 @@
 package entityBeans;
 
-
 public interface IAddress{
 	
 	public long getId() ;
 	public void setId(long id);
+	
+	public int getVersion();
+	public void setVersion(int version);
 	
 	public String getStreet();
 	public void setStreet(String street);

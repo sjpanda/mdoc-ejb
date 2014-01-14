@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<body>
+	<ui:composition>
+
+		<header id="headBox"> <h:outputLink
+			value="../Utils/mainView.xhtml">
+			<h:graphicImage value="../../Library/images/logo_upmc1.png" />
+		</h:outputLink> <hgroup id="headTitleBox">
+		<h1>M D O C</h1>
+		<h2>Middlewares orientés composants</h2>
+		</hgroup> </header>
+		<h:form>
+			<nav class="navbar navbar-static-top">
+			<div class="navbar-inner">
+				<div class="container">
+					<ul class="nav navbar-nav">
+						<li id="accueil"><h:outputLink
+								value="../Utils/mainView.xhtml">Accueil</h:outputLink></li>
+						<li id="configuration" class="dropdown"><a
+							class="dropdown-toggle" data-toggle="dropdown"
+							href="ListContactServlet"> Contact <b class="caret"></b>
+						</a>
+							<ul class="dropdown-menu">
+								<li><h:outputLink value="../Contact/contactView.xhtml">
+										<h:outputText value="Create contact" />
+										<f:param name="action" value="create" />
+									</h:outputLink></li>
+								<li><h:outputLink value="../Contact/listContactView.xhtml">
+										<h:outputText value="Update" />
+										<f:param name="action" value="update" />
+									</h:outputLink></li>
+								<li><h:outputLink value="../Contact/listContactView.xhtml">
+										<h:outputText value="List contact" />
+										<f:param name="action" value="list" />
+									</h:outputLink></li>
+								<li><h:outputLink value="../Contact/contactView.xhtml">
+										<h:outputText value="Search contact" />
+										<f:param name="action" value="search" />
+									</h:outputLink></li>
+							</ul></li>
+						<li><!--  <h:form> -->
+								<h:commandLink action="#{contactController.generateContacts}"
+									value="Generate Contacts" rendered="#{user.connected}" />
+							<!-- </h:form>--></li>
+					</ul>
+					<div class="pull-right">
+						<ul class="nav pull-right">
+							<li><!-- <h:form> -->
+									<h:commandLink action="#{user.logout}"
+										value="Lougout( #{user.name} )" rendered="#{user.connected}" />
+								<!-- </h:form>--></li>
+							<li><h:outputLink value="../Utils/loginView.xhtml"
+									rendered="#{not user.connected}">
+									<h:outputText value="Login" />
+								</h:outputLink></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			</nav>
+		</h:form>
+
+	</ui:composition>
+</body>
+</html>

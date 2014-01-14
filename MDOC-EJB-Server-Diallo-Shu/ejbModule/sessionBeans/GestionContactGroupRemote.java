@@ -10,6 +10,8 @@ import entityBeans.IContactGroup;
 @Remote
 public interface GestionContactGroupRemote {
 	public boolean createContactGroup(String name , String idContact);
+	
+	public IContactGroup instanceContactGroup();
 
 	public List<IContactGroup> getAllContactGroup();
 

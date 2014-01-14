@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<f:metadata>
+	<f:event listener="#{contactGroupController.init}" type="preRenderView" />
+</f:metadata>
+<h:body>
+
+	<ui:composition template="../../templates/commonLayout.xhtml">
+		<ui:define name="title">
+			<h:outputText value="Add contacts"
+				rendered="#{contactGroupController.action eq 'create'}" />
+			<h:outputText value="List contacts"
+				rendered="#{contactGroupController.action eq 'view'}" />
+		</ui:define>
+
+		<ui:define name="content">
+			<f:view>
+				<h:form>
+					<h:panelGroup
+						rendered="#{contactGroupController.action eq 'create'}">
+						<ul class="breadcrumb">
+							<li><h:outputLink value="../Contact/listContactView.xhtml">
+									<h:outputText value="List contact" />
+									<f:param name="action" value="update" />
+								</h:outputLink> <span class="divider">/</span></li>
+							<li><h:outputLink
+									value="../ContactGroup/contactGroupView.xhtml">
+									<h:outputText value="List contact group" />
+									<f:param name="idContact" value="#{contactGroupController.contact.id}" />
+									<f:param name="action" value="create" />
+								</h:outputLink> <span class="divider">/</span></li>
+							<li class="active">Add contact</li>
+						</ul>
+					</h:panelGroup>
+                    <h:panelGroup
+                        rendered="#{contactGroupController.action eq 'view'}">
+                        <ul class="breadcrumb">
+                            <li><h:outputLink value="../Contact/listContactView.xhtml">
+                                    <h:outputText value="List contact" />
+                                    <f:param name="action" value="list" />
+                                </h:outputLink> <span class="divider">/</span></li>
+                            <li><h:outputLink
+                                    value="../ContactGroup/contactGroupView.xhtml">
+                                    <h:outputText value="List contact group" />
+                                    <f:param name="idContact" value="#{contactGroupController.contact.id}" />
+                                    <f:param name="action" value="view" />
+                                </h:outputLink> <span class="divider">/</span></li>
+                            <li class="active">Add contact</li>
+                        </ul>
+                    </h:panelGroup>
+					<f:loadBundle basename="properties.messagesContact" var="msg" />
+					<table class="table table-bordered table-hover">
+						<tr>
+							<th><h:outputText value="#{msg.firstName}" /></th>
+							<th><h:outputText value="#{msg.lastName}" /></th>
+							<th><h:outputText value="#{msg.email}" /></th>
+							<h:panelGroup
+								rendered="#{contactGroupController.action eq 'create'}">
+								<th><h:outputText value="Add ?" /></th>
+							</h:panelGroup>
+						</tr>
+
+						<ui:repeat value="#{contactGroupController.contacts}"
+							var="contact">
+							<tr>
+								<td><h:outputLabel value="#{contact.firstname}" /></td>
+								<td><h:outputLabel value="#{contact.lastname}" /></td>
+								<td><h:outputLabel value="#{contact.email}" /></td>
+								<h:panelGroup
+									rendered="#{contactGroupController.action eq 'create'}">
+									<td><h:selectBooleanCheckbox
+											value="#{contactGroupController.contactAdded[contact.id]}" /></td>
+								</h:panelGroup>
+							</tr>
+						</ui:repeat>
+					</table>
+					<h:panelGroup
+						rendered="#{contactGroupController.action eq 'create'}">
+						<p class="text-center">
+							<button type="reset" class="btn">Reset</button>
+							<h:commandButton action="#{contactGroupController.addContact}"
+								value="Add contacts" styleClass="btn btn-success"
+								style="margin-left: 20px;" />
+
+						</p>
+					</h:panelGroup>
+				</h:form>
+			</f:view>
+		</ui:define>
+
+	</ui:composition>
+
+</h:body>
+
+</html>

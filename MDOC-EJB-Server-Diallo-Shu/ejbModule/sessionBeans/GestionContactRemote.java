@@ -22,6 +22,8 @@ public interface GestionContactRemote {
 	public List searchContact(String fname, String lname, String email, IAddress address,
 			String home, String office, String mobile);
 
+	public IContact instanceContact();
+	
 	public Object[] getContactById(String id);
 
 	public List<IContact> getAllContacts();

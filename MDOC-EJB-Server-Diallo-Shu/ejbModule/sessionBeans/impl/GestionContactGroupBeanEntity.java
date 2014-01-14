@@ -44,6 +44,10 @@ public class GestionContactGroupBeanEntity implements GestionContactGroupRemote 
 			return false;
 		}
 	}
+	
+	public IContactGroup instanceContactGroup(){
+		return new ContactGroup();
+	}
 
 	public List<IContactGroup> getAllContactGroup(){
 		try{

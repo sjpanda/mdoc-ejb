@@ -7,6 +7,9 @@ public interface IContact{
 	public long getId();
 	public void setId(long id);
 	
+	public int getVersion();
+	public void setVersion(int version);
+	
 	public String getFirstname();
 	public void setFirstname(String firstname);
 	
