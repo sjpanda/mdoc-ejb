@@ -46,6 +46,10 @@
     <param-name>org.apache.myfaces.PRETTY_HTML</param-name>
     <param-value>true</param-value>
   </context-param>
+  <context-param>
+      <param-name>org.jboss.jbossfaces.WAR_BUNDLES_JSF_IMPL</param-name>
+      <param-value>true</param-value>
+</context-param>
   <filter>
     <display-name>RestrictionFilter</display-name>
     <filter-name>RestrictionFilter</filter-name>

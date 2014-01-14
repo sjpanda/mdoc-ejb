@@ -48,6 +48,7 @@ public class ContactController {
 
 			if(action.equals("create") || action.equals("search")){
 				GestionContactRemote gestionContactRemote = (GestionContactRemote)context.lookup("ContactBeanEntity");
+				
 				contact = gestionContactRemote.instanceContact();
 				GestionAddressRemote gestionAddressRemote = (GestionAddressRemote)context.lookup("AddressBeanEntity");
 				contact.setAddress(gestionAddressRemote.instanceAddress());
