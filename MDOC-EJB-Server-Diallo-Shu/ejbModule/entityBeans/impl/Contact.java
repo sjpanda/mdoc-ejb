@@ -6,6 +6,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import entityBeans.IAddress;
 import entityBeans.IContact;
@@ -13,6 +18,7 @@ import entityBeans.IContactGroup;
 import entityBeans.IPhoneNumber;
 
 @Entity
+@Inheritance(strategy=InheritanceType.JOINED)
 public class Contact implements IContact {
 	private long id;
 	private String firstname;
@@ -51,6 +57,7 @@ public class Contact implements IContact {
 		this.email = email;
 	}
 	
+	@OneToOne
 	public IAddress getAddress() {
 		return address;
 	}
@@ -58,6 +65,7 @@ public class Contact implements IContact {
 		this.address = address;
 	}
 	
+	@OneToMany(mappedBy = "contact")
 	public Set<IPhoneNumber> getProfiles() {
 		return profiles;
 	}
@@ -65,6 +73,7 @@ public class Contact implements IContact {
 		this.profiles = profiles;
 	}
 	
+	@ManyToMany
 	public Set<IContactGroup> getBooks() {
 		return books;
 	}
