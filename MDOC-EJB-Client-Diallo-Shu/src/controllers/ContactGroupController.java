@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
@@ -13,10 +14,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.catalina.core.ApplicationContext;
-
-import sessionBeans.GestionContactGroupRemote;
-import sessionBeans.GestionContactRemote;
+import sessionBeans.local.GestionContactGroupLocal;
+import sessionBeans.local.GestionContactLocal;
 import entityBeans.IContact;
 import entityBeans.IContactGroup;
 
@@ -30,6 +29,11 @@ public class ContactGroupController {
 	private String action;
 	private String idContactGroup;
 
+	@EJB(name="ContactBeanEntity")
+	private GestionContactLocal gestionContactLocal;
+	@EJB(name="ContactGroupBeanEntity")
+	private GestionContactGroupLocal gestionContactGroupLocal;
+
 	public void init(ComponentSystemEvent event){		
 		FacesContext fc = FacesContext.getCurrentInstance();
 		Map<String,String> params = fc.getExternalContext().getRequestParameterMap();
@@ -39,74 +43,53 @@ public class ContactGroupController {
 		if(params.get("action") != null){
 			action = params.get("action");
 		}
-		Context context;
-		try {
-			context = new InitialContext();
-			GestionContactRemote gestionContactRemote = (GestionContactRemote)context.lookup("ContactBeanEntity");
-			if(idContact != null){
-				System.out.println("idContact = " + idContact);
+		if(idContact != null){
+			System.out.println("idContact = " + idContact);
 
-				Object[] result = gestionContactRemote.getContactById(idContact);
-				contact = (IContact)result[0];
-				contactGroups = new ArrayList<IContactGroup>(contact.getBooks());
+			Object[] result = gestionContactLocal.getContactById(idContact);
+			contact = (IContact)result[0];
+			contactGroups = new ArrayList<IContactGroup>(contact.getBooks());
 
-			}
-			if(idContactGroup != null){
-				contacts = new ArrayList<IContact>();
-				this.idContactGroup= idContactGroup;
-
-				if(action.equals("create")){
-					contactAdded = new HashMap<Long, Boolean>();
-					contacts = getAllContactForAdd(idContactGroup);
-					//a changer
-					for(IContact c : contacts){
-						contactAdded.put(c.getId(), false);
-					}
-				}
-				else{
-					GestionContactGroupRemote gestionContactGroupRemote = (GestionContactGroupRemote)context.lookup("ContactGroupBeanEntity");
-					contacts = gestionContactGroupRemote.getContactsByIdContactGroup(idContactGroup);
-				}
-
-			}
-			GestionContactGroupRemote gestionContactGroupRemote = (GestionContactGroupRemote)context.lookup("ContactGroupBeanEntity");
-			contactGroup = gestionContactGroupRemote.instanceContactGroup();
-		} catch (NamingException e) {
-			e.printStackTrace();
 		}
+		if(idContactGroup != null){
+			contacts = new ArrayList<IContact>();
+			this.idContactGroup= idContactGroup;
 
+			if(action.equals("create")){
+				contactAdded = new HashMap<Long, Boolean>();
+				contacts = getAllContactForAdd(idContactGroup);
+				//a changer
+				for(IContact c : contacts){
+					contactAdded.put(c.getId(), false);
+				}
+			}
+			else{
+				contacts = gestionContactGroupLocal.getContactsByIdContactGroup(idContactGroup);
+			}
+
+		}
+		contactGroup = gestionContactGroupLocal.instanceContactGroup();
 	}
 
 	public String save(){
-		Context context;
-		try {
-			context = new InitialContext();
+		FacesContext contexte = FacesContext.getCurrentInstance();
 
-			GestionContactGroupRemote gestionContactGroupRemote = (GestionContactGroupRemote)context.lookup("ContactGroupBeanEntity");
-			FacesContext contexte = FacesContext.getCurrentInstance();
+		String groupContactName = contactGroup.getGroupName();
+		String idContact = contact.getId()+"";
 
-			String groupContactName = contactGroup.getGroupName();
-			String idContact = contact.getId()+"";
-
-			if(gestionContactGroupRemote.createContactGroup(groupContactName, idContact)){
-				contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correct", null));
-				MessageController.getCurrentMessage(false, "Contact group succesfully added", "Contact group has been added");			
-			}
-			else{
-				contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Incorrect", null));
-				MessageController.getCurrentMessage(false, "Failed to Add Contact group", "Failure when adding contact group");	
-			}
-
-			GestionContactRemote gestionContactRemote = (GestionContactRemote)context.lookup("ContactBeanEntity");
-			Object[] result = gestionContactRemote.getContactById(idContact);
-			contact = (IContact)result[0];
-			contactGroups = new ArrayList<IContactGroup>(contact.getBooks());
-		} catch (NamingException e) {
-			e.printStackTrace();
-			FacesContext contexte = FacesContext.getCurrentInstance();
-			contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Incorrect", null));
-			MessageController.getCurrentMessage(false, "Failed to Add Contact group", "Failure when calling InitialContext");	
+		if(gestionContactGroupLocal.createContactGroup(groupContactName, idContact)){
+			contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correct", null));
+			MessageController.getCurrentMessage(false, "Contact group succesfully added", "Contact group has been added");			
 		}
+		else{
+			contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Incorrect", null));
+			MessageController.getCurrentMessage(false, "Failed to Add Contact group", "Failure when adding contact group");	
+		}
+
+		Object[] result = gestionContactLocal.getContactById(idContact);
+		contact = (IContact)result[0];
+		contactGroups = new ArrayList<IContactGroup>(contact.getBooks());
+
 		return null;
 	}
 
@@ -117,36 +100,25 @@ public class ContactGroupController {
 	}
 
 	public String addContact(){
-		Context context;
-		try {
-			context = new InitialContext();
+		ArrayList<String> listContact1 = new ArrayList<String>();
+		FacesContext contexte = FacesContext.getCurrentInstance();
+		for(IContact c : contacts){
+			if(contactAdded.get(c.getId())){
+				listContact1.add(c.getId()+"");
+			}
+		}
+		String[] list = new String[listContact1.size()];
+		for(int i = 0 ; i < listContact1.size() ; i++){
+			list[i]= listContact1.get(i);
+		}
 
-			ArrayList<String> listContact1 = new ArrayList<String>();
-			FacesContext contexte = FacesContext.getCurrentInstance();
-			for(IContact c : contacts){
-				if(contactAdded.get(c.getId())){
-					listContact1.add(c.getId()+"");
-				}
-			}
-			String[] list = new String[listContact1.size()];
-			for(int i = 0 ; i < listContact1.size() ; i++){
-				list[i]= listContact1.get(i);
-			}
-
-			GestionContactGroupRemote gestionContactGroupRemote = (GestionContactGroupRemote)context.lookup("ContactGroupBeanEntity");
-			if(gestionContactGroupRemote.addContact(list, idContactGroup)){
-				contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correct", null));
-				MessageController.getCurrentMessage(false, "Contacts succesfully added", "Contacts have been added");			
-			}
-			else{
-				contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Incorrect", null));
-				MessageController.getCurrentMessage(false, "Failed to Add Contacts", "Failure when adding contacts");	
-			}
-		} catch (NamingException e) {
-			e.printStackTrace();
-			FacesContext contexte = FacesContext.getCurrentInstance();
+		if(gestionContactGroupLocal.addContact(list, idContactGroup)){
+			contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correct", null));
+			MessageController.getCurrentMessage(false, "Contacts succesfully added", "Contacts have been added");			
+		}
+		else{
 			contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Incorrect", null));
-			MessageController.getCurrentMessage(false, "Failed to Add Contacts", "Failure when calling InitialContext");	
+			MessageController.getCurrentMessage(false, "Failed to Add Contacts", "Failure when adding contacts");	
 		}
 
 		return null;
@@ -211,31 +183,22 @@ public class ContactGroupController {
 	private List getAllContactForAdd(String idContactGroup){
 		List contactsUnique = new ArrayList();
 
-		Context context;
-		try {
-			context = new InitialContext();
-			GestionContactRemote gestionContactRemote = (GestionContactRemote)context.lookup("ContactBeanEntity");
-			GestionContactGroupRemote gestionContactGroupRemote = (GestionContactGroupRemote)context.lookup("ContactGroupBeanEntity");
+		List contacts = gestionContactLocal.getAllContacts();
+		IContactGroup contactGroup = gestionContactGroupLocal.getContactGroupById(idContactGroup);
+		Set<IContact> contactsGroup = contactGroup.getContacts();
 
-			List contacts = gestionContactRemote.getAllContacts();
-			IContactGroup contactGroup = gestionContactGroupRemote.getContactGroupById(idContactGroup);
-			Set<IContact> contactsGroup = contactGroup.getContacts();
-
-			boolean existe = false;
-			for(int i = 0 ; i < contacts.size() ; i++){
-				existe = false;
-				for(IContact c : contactsGroup){
-					if(c.getId() == ((IContact)contacts.get(i)).getId()){
-						existe = true;
-						break;
-					}
-				}
-				if(!existe){
-					contactsUnique.add(contacts.get(i));
+		boolean existe = false;
+		for(int i = 0 ; i < contacts.size() ; i++){
+			existe = false;
+			for(IContact c : contactsGroup){
+				if(c.getId() == ((IContact)contacts.get(i)).getId()){
+					existe = true;
+					break;
 				}
 			}
-		} catch (NamingException e) {
-			e.printStackTrace();	
+			if(!existe){
+				contactsUnique.add(contacts.get(i));
+			}
 		}
 
 		return contactsUnique;

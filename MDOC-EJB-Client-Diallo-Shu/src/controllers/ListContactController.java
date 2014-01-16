@@ -4,17 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
-import org.apache.catalina.core.ApplicationContext;
-
-import sessionBeans.GestionContactRemote;
-
+import sessionBeans.local.GestionContactLocal;
 import entityBeans.IContact;
 
 public class ListContactController {
@@ -23,6 +18,9 @@ public class ListContactController {
 	private IContact contact;
 	private String action;
 
+	@EJB(name="ContactBeanEntity")
+	private GestionContactLocal gestionContactLocal;
+
 	public void init(ComponentSystemEvent event){		
 		FacesContext fc = FacesContext.getCurrentInstance();
 		Map<String,String> params = fc.getExternalContext().getRequestParameterMap();
@@ -30,32 +28,17 @@ public class ListContactController {
 		if(params.get("action") != null){
 			action = params.get("action");
 		}
-		Context context;
-		try {
-			context = new InitialContext();
-			GestionContactRemote gestionContactRemote = (GestionContactRemote)context.lookup("ContactBeanEntity");
 
-			contacts = new ArrayList<IContact>();
-			contacts = gestionContactRemote.getAllContacts();
-		} catch (NamingException e) {
-			e.printStackTrace();
-		}
+		contacts = new ArrayList<IContact>();
+		contacts = gestionContactLocal.getAllContacts();
 	}
 
 	public String delete(){
 		FacesContext contexte = FacesContext.getCurrentInstance();
-		Context context;
-		try {
-			context = new InitialContext();
-			GestionContactRemote gestionContactRemote = (GestionContactRemote)context.lookup("ContactBeanEntity");
-			String id = contact.getId() + "";
-			if(gestionContactRemote.deleteContact(id)){
-				contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correct", null));
-			} else {
-				contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Incorrect", null));
-			}
-		} catch (NamingException e) {
-			e.printStackTrace();
+		String id = contact.getId() + "";
+		if(gestionContactLocal.deleteContact(id)){
+			contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correct", null));
+		} else {
 			contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Incorrect", null));
 		}
 		return null;

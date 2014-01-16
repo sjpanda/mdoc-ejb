@@ -7,15 +7,15 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import sessionBeans.local.GestionContactGroupLocal;
+import sessionBeans.remote.GestionContactGroupRemote;
+import sessionBeans.remote.GestionContactRemote;
 import entityBeans.IContact;
 import entityBeans.IContactGroup;
 import entityBeans.impl.ContactGroup;
 
-import sessionBeans.GestionContactGroupRemote;
-import sessionBeans.GestionContactRemote;
-
 @Stateless(mappedName="ContactGroupBeanEntity")
-public class GestionContactGroupBeanEntity implements GestionContactGroupRemote {
+public class GestionContactGroupBeanEntity implements GestionContactGroupLocal, GestionContactGroupRemote {
 
 	@PersistenceContext
 	EntityManager em;

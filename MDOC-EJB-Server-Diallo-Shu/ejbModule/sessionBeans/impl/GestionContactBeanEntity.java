@@ -9,9 +9,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import sessionBeans.GestionContactGroupRemote;
-import sessionBeans.GestionContactRemote;
-import sessionBeans.GestionPhoneNumberRemote;
+import sessionBeans.local.GestionContactLocal;
+import sessionBeans.remote.GestionContactGroupRemote;
+import sessionBeans.remote.GestionContactRemote;
+import sessionBeans.remote.GestionPhoneNumberRemote;
 import entityBeans.IAddress;
 import entityBeans.IContact;
 import entityBeans.IContactGroup;
@@ -23,7 +24,7 @@ import entityBeans.impl.Entreprise;
 import entityBeans.impl.PhoneNumber;
 
 @Stateless(mappedName="ContactBeanEntity")
-public class GestionContactBeanEntity implements GestionContactRemote {
+public class GestionContactBeanEntity implements GestionContactLocal, GestionContactRemote {
 
 	@PersistenceContext
 	EntityManager em;

@@ -1,4 +1,4 @@
-package sessionBeans;
+package sessionBeans.remote;
 
 import java.util.List;
 

@@ -1,11 +1,11 @@
-package sessionBeans;
+package sessionBeans.local;
 
-import javax.ejb.Remote;
+import javax.ejb.Local;
 
 import entityBeans.IAddress;
 
-@Remote
-public interface GestionAddressRemote {
+@Local
+public interface GestionAddressLocal {
 	public IAddress instanceAddress();
 	
 	public IAddress instanceAddress(String street, String city, String zip, String country);

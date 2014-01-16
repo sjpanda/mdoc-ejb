@@ -1,10 +1,13 @@
-package sessionBeans;
+package sessionBeans.local;
 
 import java.util.List;
 
+import javax.ejb.Local;
+
 import entityBeans.IPhoneNumber;
 
-public interface GestionPhoneNumberRemote {
+@Local
+public interface GestionPhoneNumberLocal {
 	public IPhoneNumber instancePhoneNumber(String phoneKind, String phoneNumber);
 	
 	public List<IPhoneNumber> getPhoneNumbersByIdContact(long idContact);

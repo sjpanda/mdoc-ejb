@@ -1,14 +1,14 @@
-package sessionBeans;
+package sessionBeans.local;
 
 import java.util.List;
 
-import javax.ejb.Remote;
+import javax.ejb.Local;
 
 import entityBeans.IContact;
 import entityBeans.IContactGroup;
 
-@Remote
-public interface GestionContactGroupRemote {
+@Local
+public interface GestionContactGroupLocal {
 	public boolean createContactGroup(String name , String idContact);
 	
 	public IContactGroup instanceContactGroup();

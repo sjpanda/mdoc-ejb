@@ -6,12 +6,13 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import sessionBeans.GestionPhoneNumberRemote;
+import sessionBeans.local.GestionPhoneNumberLocal;
+import sessionBeans.remote.GestionPhoneNumberRemote;
 import entityBeans.IPhoneNumber;
 import entityBeans.impl.PhoneNumber;
 
 @Stateless(mappedName="PhoneNumberBeanEntity")
-public class GestionPhoneNumberBeanEntity implements GestionPhoneNumberRemote {
+public class GestionPhoneNumberBeanEntity implements GestionPhoneNumberLocal, GestionPhoneNumberRemote {
 
 	@PersistenceContext
 	EntityManager em;

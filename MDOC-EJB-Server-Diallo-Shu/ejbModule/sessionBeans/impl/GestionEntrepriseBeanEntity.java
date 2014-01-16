@@ -4,11 +4,12 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import sessionBeans.GestionEntrepriseRemote;
+import sessionBeans.local.GestionEntrepriseLocal;
+import sessionBeans.remote.GestionEntrepriseRemote;
 import entityBeans.IEntreprise;
 
 @Stateless(mappedName="EntrepriseBeanEntity")
-public class GestionEntrepriseBeanEntity implements GestionEntrepriseRemote{
+public class GestionEntrepriseBeanEntity implements GestionEntrepriseLocal, GestionEntrepriseRemote{
 	
 	@PersistenceContext
 	EntityManager em;

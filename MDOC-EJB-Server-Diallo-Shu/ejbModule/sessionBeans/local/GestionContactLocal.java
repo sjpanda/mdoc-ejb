@@ -1,17 +1,17 @@
-package sessionBeans;
+package sessionBeans.local;
 
 import java.util.List;
 import java.util.Set;
 
-import javax.ejb.Remote;
+import javax.ejb.Local;
 
 import entityBeans.IAddress;
 import entityBeans.IContact;
 import entityBeans.IContactGroup;
 import entityBeans.IPhoneNumber;
 
-@Remote
-public interface GestionContactRemote {
+@Local
+public interface GestionContactLocal {
 	public boolean createContact(String fname, String lname, String email, IAddress address, Set<IPhoneNumber> profiles, int numSiret);
 
 	public boolean updateContact(IContact c, String fname, String lname, String email, 

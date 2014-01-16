@@ -4,12 +4,13 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import sessionBeans.GestionAddressRemote;
+import sessionBeans.local.GestionAddressLocal;
+import sessionBeans.remote.GestionAddressRemote;
 import entityBeans.IAddress;
 import entityBeans.impl.Address;
 
 @Stateless(mappedName="AddressBeanEntity")
-public class GestionAddressBeanEntity implements GestionAddressRemote {
+public class GestionAddressBeanEntity implements GestionAddressLocal, GestionAddressRemote {
 
 	@PersistenceContext
 	EntityManager em;
