@@ -24,7 +24,7 @@ import entityBeans.impl.Entreprise;
 import entityBeans.impl.PhoneNumber;
 
 @Stateless(mappedName="ContactBeanEntity")
-public class GestionContactBeanEntity implements GestionContactLocal, GestionContactRemote {
+public class GestionContactBean implements GestionContactLocal, GestionContactRemote {
 
 	@PersistenceContext
 	EntityManager em;
@@ -115,7 +115,7 @@ public class GestionContactBeanEntity implements GestionContactLocal, GestionCon
 			}
 			c.getProfiles().clear();
 
-			GestionContactGroupRemote gestionContactGroupRemote = new GestionContactGroupBeanEntity();
+			GestionContactGroupRemote gestionContactGroupRemote = new GestionContactGroupBean();
 			for(IContactGroup cg : c.getBooks()){
 				cg.getContacts().remove(c);
 				if(cg.getContacts().size() == 0){
@@ -171,7 +171,7 @@ public class GestionContactBeanEntity implements GestionContactLocal, GestionCon
 
 			List toRemove = new ArrayList();
 
-			GestionPhoneNumberRemote gestionPhoneNumberRemote = new GestionPhoneNumberBeanEntity();
+			GestionPhoneNumberRemote gestionPhoneNumberRemote = new GestionPhoneNumberBean();
 
 			for(int i=0; i<contacts.size(); i++){
 				IContact c = (IContact)(((Object[])contacts.get(i))[0]);

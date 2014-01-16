@@ -10,7 +10,7 @@ import entityBeans.IAddress;
 import entityBeans.impl.Address;
 
 @Stateless(mappedName="AddressBeanEntity")
-public class GestionAddressBeanEntity implements GestionAddressLocal, GestionAddressRemote {
+public class GestionAddressBean implements GestionAddressLocal, GestionAddressRemote {
 
 	@PersistenceContext
 	EntityManager em;
