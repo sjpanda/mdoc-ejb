@@ -12,7 +12,7 @@ import entityBeans.IPhoneNumber;
 import entityBeans.impl.PhoneNumber;
 
 @Stateless(mappedName="PhoneNumberBeanEntity")
-public class GestionPhoneNumberBeanEntity implements GestionPhoneNumberLocal, GestionPhoneNumberRemote {
+public class GestionPhoneNumberBean implements GestionPhoneNumberLocal, GestionPhoneNumberRemote {
 
 	@PersistenceContext
 	EntityManager em;

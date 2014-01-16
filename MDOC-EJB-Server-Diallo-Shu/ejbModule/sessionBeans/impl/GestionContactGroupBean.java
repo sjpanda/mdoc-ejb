@@ -15,7 +15,7 @@ import entityBeans.IContactGroup;
 import entityBeans.impl.ContactGroup;
 
 @Stateless(mappedName="ContactGroupBeanEntity")
-public class GestionContactGroupBeanEntity implements GestionContactGroupLocal, GestionContactGroupRemote {
+public class GestionContactGroupBean implements GestionContactGroupLocal, GestionContactGroupRemote {
 
 	@PersistenceContext
 	EntityManager em;
@@ -85,7 +85,7 @@ public class GestionContactGroupBeanEntity implements GestionContactGroupLocal, 
 				return false;
 			}
 
-			GestionContactRemote gestionContactRemote = new GestionContactBeanEntity();
+			GestionContactRemote gestionContactRemote = new GestionContactBean();
 
 			if(contacts != null){
 				for(String idContact : contacts){	
