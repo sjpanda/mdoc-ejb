@@ -10,8 +10,7 @@ import javax.persistence.PersistenceContext;
 import sessionBeans.local.GestionContactGroupLocal;
 import sessionBeans.remote.GestionContactGroupRemote;
 import sessionBeans.remote.GestionContactRemote;
-import entityBeans.IContact;
-import entityBeans.IContactGroup;
+import entityBeans.impl.Contact;
 import entityBeans.impl.ContactGroup;
 
 @Stateless(mappedName="ContactGroupBeanEntity")
@@ -22,11 +21,11 @@ public class GestionContactGroupBean implements GestionContactGroupLocal, Gestio
 
 	public boolean createContactGroup(String name , String idContact){		
 		try{
-			IContactGroup c = new ContactGroup();
+			ContactGroup c = new ContactGroup();
 			c.setGroupName(name);
 
 			long idNum = Integer.parseInt(idContact);
-			IContact contact = em.find(IContact.class, idNum);
+			Contact contact = em.find(Contact.class, idNum);
 
 			if(contact == null){
 				System.out.println("Contact " + idContact + " not found");
@@ -45,13 +44,13 @@ public class GestionContactGroupBean implements GestionContactGroupLocal, Gestio
 		}
 	}
 	
-	public IContactGroup instanceContactGroup(){
+	public ContactGroup instanceContactGroup(){
 		return new ContactGroup();
 	}
 
-	public List<IContactGroup> getAllContactGroup(){
+	public List<ContactGroup> getAllContactGroup(){
 		try{
-			List<IContactGroup> contactGroup = em.createQuery("select c from ContactGroup c ").getResultList();
+			List<ContactGroup> contactGroup = em.createQuery("select c from ContactGroup c ").getResultList();
 			return contactGroup;
 		} catch(Exception e){
 			System.out.println(e.getMessage());
@@ -59,7 +58,7 @@ public class GestionContactGroupBean implements GestionContactGroupLocal, Gestio
 		}
 	}
 
-	public IContactGroup getContactGroupById(String id){
+	public ContactGroup getContactGroupById(String id){
 		try{
 			long idNum = 0;
 			try{
@@ -69,7 +68,7 @@ public class GestionContactGroupBean implements GestionContactGroupLocal, Gestio
 				return null;
 			}
 
-			return em.find(IContactGroup.class, idNum);
+			return em.find(ContactGroup.class, idNum);
 		} catch(Exception e){
 			System.out.println(e.getMessage());
 			return null;
@@ -79,7 +78,7 @@ public class GestionContactGroupBean implements GestionContactGroupLocal, Gestio
 	public boolean addContact(String[] contacts, String idContactGroup){		
 		try{
 			long idNum = Integer.parseInt(idContactGroup);
-			IContactGroup c = em.find(IContactGroup.class, idNum);
+			ContactGroup c = em.find(ContactGroup.class, idNum);
 			if(c == null){
 				System.out.println("Group contact " + idContactGroup + " not found");
 				return false;
@@ -90,7 +89,7 @@ public class GestionContactGroupBean implements GestionContactGroupLocal, Gestio
 			if(contacts != null){
 				for(String idContact : contacts){	
 					long id = Integer.parseInt(idContact);
-					IContact contact = em.find(IContact.class, id);
+					Contact contact = em.find(Contact.class, id);
 					if(contact == null){
 						System.out.println("Cannot find the contact " + idContact);
 						return false;
@@ -110,18 +109,18 @@ public class GestionContactGroupBean implements GestionContactGroupLocal, Gestio
 		}	
 	}
 
-	public List<IContact> getContactsByIdContactGroup(final String idContactGroup){
+	public List<Contact> getContactsByIdContactGroup(final String idContactGroup){
 		try{
 			long id = Integer.parseInt(idContactGroup);
-			IContactGroup contactGroup = em.find(IContactGroup.class, id);
-			return new ArrayList<IContact>(contactGroup.getContacts());
+			ContactGroup contactGroup = em.find(ContactGroup.class, id);
+			return new ArrayList<Contact>(contactGroup.getContacts());
 		} catch(Exception e){
 			System.out.println(e.getMessage());
 			return null;
 		}	
 	}
 
-	public boolean deleteContactGroup(IContactGroup contactGroup){		
+	public boolean deleteContactGroup(ContactGroup contactGroup){		
 		try{
 			em.remove(contactGroup);
 			return true;

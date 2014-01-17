@@ -10,21 +10,18 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import sessionBeans.local.GestionContactGroupLocal;
 import sessionBeans.local.GestionContactLocal;
-import entityBeans.IContact;
-import entityBeans.IContactGroup;
+import entityBeans.impl.Contact;
+import entityBeans.impl.ContactGroup;
 
 public class ContactGroupController {
 
-	private IContactGroup contactGroup;
-	private IContact contact;
-	private List<IContactGroup> contactGroups;
-	private List<IContact> contacts;
+	private ContactGroup contactGroup;
+	private Contact contact;
+	private List<ContactGroup> contactGroups;
+	private List<Contact> contacts;
 	private Map<Long, Boolean> contactAdded;
 	private String action;
 	private String idContactGroup;
@@ -47,19 +44,19 @@ public class ContactGroupController {
 			System.out.println("idContact = " + idContact);
 
 			Object[] result = gestionContactLocal.getContactById(idContact);
-			contact = (IContact)result[0];
-			contactGroups = new ArrayList<IContactGroup>(contact.getBooks());
+			contact = (Contact)result[0];
+			contactGroups = new ArrayList<ContactGroup>(contact.getBooks());
 
 		}
 		if(idContactGroup != null){
-			contacts = new ArrayList<IContact>();
+			contacts = new ArrayList<Contact>();
 			this.idContactGroup= idContactGroup;
 
 			if(action.equals("create")){
 				contactAdded = new HashMap<Long, Boolean>();
 				contacts = getAllContactForAdd(idContactGroup);
 				//a changer
-				for(IContact c : contacts){
+				for(Contact c : contacts){
 					contactAdded.put(c.getId(), false);
 				}
 			}
@@ -87,8 +84,8 @@ public class ContactGroupController {
 		}
 
 		Object[] result = gestionContactLocal.getContactById(idContact);
-		contact = (IContact)result[0];
-		contactGroups = new ArrayList<IContactGroup>(contact.getBooks());
+		contact = (Contact)result[0];
+		contactGroups = new ArrayList<ContactGroup>(contact.getBooks());
 
 		return null;
 	}
@@ -102,7 +99,7 @@ public class ContactGroupController {
 	public String addContact(){
 		ArrayList<String> listContact1 = new ArrayList<String>();
 		FacesContext contexte = FacesContext.getCurrentInstance();
-		for(IContact c : contacts){
+		for(Contact c : contacts){
 			if(contactAdded.get(c.getId())){
 				listContact1.add(c.getId()+"");
 			}
@@ -124,35 +121,35 @@ public class ContactGroupController {
 		return null;
 	}
 
-	public IContactGroup getContactGroup() {
+	public ContactGroup getContactGroup() {
 		return contactGroup;
 	}
 
-	public void setContactGroup(IContactGroup contactGroup) {
+	public void setContactGroup(ContactGroup contactGroup) {
 		this.contactGroup = contactGroup;
 	}
 
-	public IContact getContact() {
+	public Contact getContact() {
 		return contact;
 	}
 
-	public void setContact(IContact contact) {
+	public void setContact(Contact contact) {
 		this.contact = contact;
 	}
 
-	public List<IContactGroup> getContactGroups() {
+	public List<ContactGroup> getContactGroups() {
 		return contactGroups;
 	}
 
-	public void setContactGroups(List<IContactGroup> contactGroups) {
+	public void setContactGroups(List<ContactGroup> contactGroups) {
 		this.contactGroups = contactGroups;
 	}
 
-	public List<IContact> getContacts() {
+	public List<Contact> getContacts() {
 		return contacts;
 	}
 
-	public void setContacts(List<IContact> contacts) {
+	public void setContacts(List<Contact> contacts) {
 		this.contacts = contacts;
 	}
 
@@ -184,14 +181,14 @@ public class ContactGroupController {
 		List contactsUnique = new ArrayList();
 
 		List contacts = gestionContactLocal.getAllContacts();
-		IContactGroup contactGroup = gestionContactGroupLocal.getContactGroupById(idContactGroup);
-		Set<IContact> contactsGroup = contactGroup.getContacts();
+		ContactGroup contactGroup = gestionContactGroupLocal.getContactGroupById(idContactGroup);
+		Set<Contact> contactsGroup = contactGroup.getContacts();
 
 		boolean existe = false;
 		for(int i = 0 ; i < contacts.size() ; i++){
 			existe = false;
-			for(IContact c : contactsGroup){
-				if(c.getId() == ((IContact)contacts.get(i)).getId()){
+			for(Contact c : contactsGroup){
+				if(c.getId() == ((Contact)contacts.get(i)).getId()){
 					existe = true;
 					break;
 				}

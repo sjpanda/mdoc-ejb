@@ -2,9 +2,9 @@ package sessionBeans.local;
 
 import javax.ejb.Local;
 
-import entityBeans.IEntreprise;
+import entityBeans.impl.Entreprise;
 
 @Local
 public interface GestionEntrepriseLocal {
-	public IEntreprise getEntrepriseByIdContact(long idContact);
+	public Entreprise getEntrepriseByIdContact(long idContact);
 }

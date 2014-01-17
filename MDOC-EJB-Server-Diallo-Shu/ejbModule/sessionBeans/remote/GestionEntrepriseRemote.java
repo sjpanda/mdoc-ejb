@@ -2,9 +2,9 @@ package sessionBeans.remote;
 
 import javax.ejb.Remote;
 
-import entityBeans.IEntreprise;
+import entityBeans.impl.Entreprise;
 
 @Remote
 public interface GestionEntrepriseRemote {
-	public IEntreprise getEntrepriseByIdContact(long idContact);
+	public Entreprise getEntrepriseByIdContact(long idContact);
 }

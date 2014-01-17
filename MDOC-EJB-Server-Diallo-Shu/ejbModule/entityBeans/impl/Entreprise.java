@@ -2,10 +2,8 @@ package entityBeans.impl;
 
 import javax.persistence.Entity;
 
-import entityBeans.IEntreprise;
-
 @Entity
-public class Entreprise extends Contact implements IEntreprise {
+public class Entreprise extends Contact {
 	private int numSiret;
 
 	public int getNumSiret() {

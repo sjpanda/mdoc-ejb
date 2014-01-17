@@ -4,13 +4,13 @@ import java.util.List;
 
 import javax.ejb.Remote;
 
-import entityBeans.IPhoneNumber;
+import entityBeans.impl.PhoneNumber;
 
 @Remote
 public interface GestionPhoneNumberRemote {
-	public IPhoneNumber instancePhoneNumber(String phoneKind, String phoneNumber);
+	public PhoneNumber instancePhoneNumber(String phoneKind, String phoneNumber);
 	
-	public List<IPhoneNumber> getPhoneNumbersByIdContact(long idContact);
+	public List<PhoneNumber> getPhoneNumbersByIdContact(long idContact);
 	
 	public boolean deletePhoneNumber(long id);
 }

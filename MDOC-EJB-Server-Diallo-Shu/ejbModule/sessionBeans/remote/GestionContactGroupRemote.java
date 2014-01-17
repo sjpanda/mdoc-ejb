@@ -4,22 +4,22 @@ import java.util.List;
 
 import javax.ejb.Remote;
 
-import entityBeans.IContact;
-import entityBeans.IContactGroup;
+import entityBeans.impl.Contact;
+import entityBeans.impl.ContactGroup;
 
 @Remote
 public interface GestionContactGroupRemote {
 	public boolean createContactGroup(String name , String idContact);
 	
-	public IContactGroup instanceContactGroup();
+	public ContactGroup instanceContactGroup();
 
-	public List<IContactGroup> getAllContactGroup();
+	public List<ContactGroup> getAllContactGroup();
 
-	public IContactGroup getContactGroupById(String id);
+	public ContactGroup getContactGroupById(String id);
 
 	public boolean addContact(String[] contacts, String idContactGroup);
 
-	public List<IContact> getContactsByIdContactGroup(String idContactGroup);
+	public List<Contact> getContactsByIdContactGroup(String idContactGroup);
 	
-	public boolean deleteContactGroup(IContactGroup contactGroup);
+	public boolean deleteContactGroup(ContactGroup contactGroup);
 }

@@ -13,13 +13,9 @@ import sessionBeans.local.GestionContactLocal;
 import sessionBeans.remote.GestionContactGroupRemote;
 import sessionBeans.remote.GestionContactRemote;
 import sessionBeans.remote.GestionPhoneNumberRemote;
-import entityBeans.IAddress;
-import entityBeans.IContact;
-import entityBeans.IContactGroup;
-import entityBeans.IEntreprise;
-import entityBeans.IPhoneNumber;
 import entityBeans.impl.Address;
 import entityBeans.impl.Contact;
+import entityBeans.impl.ContactGroup;
 import entityBeans.impl.Entreprise;
 import entityBeans.impl.PhoneNumber;
 
@@ -29,14 +25,14 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 	@PersistenceContext
 	EntityManager em;
 
-	public boolean createContact(String fname, String lname, String email, IAddress address, Set<IPhoneNumber> profiles, int numSiret){		
+	public boolean createContact(String fname, String lname, String email, Address address, Set<PhoneNumber> profiles, int numSiret){		
 		try {
-			IContact c;
+			Contact c;
 			if(numSiret <= 0){
 				c = new Contact();
 			} else {
 				c = new Entreprise();
-				((IEntreprise)c).setNumSiret(numSiret);
+				((Entreprise)c).setNumSiret(numSiret);
 			}
 
 			if(address != null){
@@ -50,7 +46,7 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 			em.persist(c);
 
 			if(profiles != null){
-				for(IPhoneNumber profile : profiles){
+				for(PhoneNumber profile : profiles){
 					profile.setContact(c);
 					c.getProfiles().add(profile);
 					em.persist(profile);
@@ -64,7 +60,7 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 		}
 	}
 
-	public boolean updateContact(IContact c, String fname, String lname, String email, 
+	public boolean updateContact(Contact c, String fname, String lname, String email, 
 			String street, String zip, String city, String country, String home, String office, String mobile, int siretnum){
 		try{
 			c.setFirstname(fname);
@@ -79,12 +75,12 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 			checkAndAdd("mobile", mobile, c, c.getProfiles());
 
 			if(siretnum == -1){
-				if(c instanceof IEntreprise){
+				if(c instanceof Entreprise){
 					return false;
 				}
 			} else {
-				if(c instanceof IEntreprise){
-					((IEntreprise)c).setNumSiret(siretnum);
+				if(c instanceof Entreprise){
+					((Entreprise)c).setNumSiret(siretnum);
 				} else {
 					return false;
 				}
@@ -109,14 +105,14 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 		}
 
 		try{
-			IContact c = em.find(IContact.class, idNum);
+			Contact c = em.find(Contact.class, idNum);
 			if(c == null){
 				return false;
 			}
 			c.getProfiles().clear();
 
 			GestionContactGroupRemote gestionContactGroupRemote = new GestionContactGroupBean();
-			for(IContactGroup cg : c.getBooks()){
+			for(ContactGroup cg : c.getBooks()){
 				cg.getContacts().remove(c);
 				if(cg.getContacts().size() == 0){
 					gestionContactGroupRemote.deleteContactGroup(cg);
@@ -132,7 +128,7 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 		}
 	}
 
-	public List searchContact(String fname, String lname, String email, IAddress address,
+	public List searchContact(String fname, String lname, String email, Address address,
 			String home, String office, String mobile){
 		try{
 			StringBuffer s = new StringBuffer();
@@ -174,9 +170,9 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 			GestionPhoneNumberRemote gestionPhoneNumberRemote = new GestionPhoneNumberBean();
 
 			for(int i=0; i<contacts.size(); i++){
-				IContact c = (IContact)(((Object[])contacts.get(i))[0]);
+				Contact c = (Contact)(((Object[])contacts.get(i))[0]);
 
-				List<IPhoneNumber> pns = gestionPhoneNumberRemote.getPhoneNumbersByIdContact(c.getId());
+				List<PhoneNumber> pns = gestionPhoneNumberRemote.getPhoneNumbersByIdContact(c.getId());
 				if((! keep("home", home, pns)) || (! keep("office", office, pns)) || (! keep("mobile", mobile, pns))){
 					toRemove.add(c);
 				}
@@ -190,7 +186,7 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 		}
 	}
 	
-	public IContact instanceContact(){
+	public Contact instanceContact(){
 		return new Contact();
 	}
 
@@ -207,10 +203,10 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 		}
 	}
 
-	public List<IContact> getAllContacts(){
+	public List<Contact> getAllContacts(){
 		try{
 			Query query = em.createQuery("from Contact c left join fetch c.address address");
-			List<IContact> contacts = query.getResultList();
+			List<Contact> contacts = query.getResultList();
 			return contacts;
 		} catch(Exception e){
 			e.printStackTrace();
@@ -218,9 +214,9 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 		}
 	}
 
-	public List<IContactGroup> getContactGroupByIdContact(String idContact){
+	public List<ContactGroup> getContactGroupByIdContact(String idContact){
 		try{
-			List<IContactGroup> contactGroup = em.createQuery("select elements(c.books) from Contact c where c.id = " + idContact).getResultList();
+			List<ContactGroup> contactGroup = em.createQuery("select elements(c.books) from Contact c where c.id = " + idContact).getResultList();
 
 			return contactGroup;
 		} catch(Exception e){
@@ -232,9 +228,9 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 
 	public boolean generateContacts(){
 		try{
-			List<IContact> contacts = new ArrayList<IContact>();
-			List<IAddress> addresses = new ArrayList<IAddress>();
-			List<IPhoneNumber> phoneNumbers = new ArrayList<IPhoneNumber>();
+			List<Contact> contacts = new ArrayList<Contact>();
+			List<Address> addresses = new ArrayList<Address>();
+			List<PhoneNumber> phoneNumbers = new ArrayList<PhoneNumber>();
 
 			for(int i=0; i<3; i++){
 				contacts.add(new Contact());
@@ -252,11 +248,11 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 
 			contacts.get(1).setFirstname("Future Life");
 			contacts.get(1).setEmail("contact@futurelife.com");
-			((IEntreprise)contacts.get(1)).setNumSiret(999999999);
+			((Entreprise)contacts.get(1)).setNumSiret(999999999);
 			
 			contacts.get(2).setFirstname("Hello Mdoc");
 			contacts.get(2).setEmail("contact@hellomdoc.com");
-			((IEntreprise)contacts.get(2)).setNumSiret(888888888);
+			((Entreprise)contacts.get(2)).setNumSiret(888888888);
 			
 			addresses.get(0).setStreet("5 Place Jussieu");
 			addresses.get(0).setCity("Paris");
@@ -319,9 +315,9 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 		}
 	}
 
-	private void checkAndAdd(String kind, String number, IContact contact, Set<IPhoneNumber> profiles){
+	private void checkAndAdd(String kind, String number, Contact contact, Set<PhoneNumber> profiles){
 		if(number.equals("")){
-			for(IPhoneNumber p : profiles){
+			for(PhoneNumber p : profiles){
 				if(p.getPhoneKind().equalsIgnoreCase(kind)){
 					em.remove(p);
 					break;
@@ -329,14 +325,14 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 			}
 		} else {
 			boolean add = true;
-			for(IPhoneNumber p : profiles){
+			for(PhoneNumber p : profiles){
 				if(p.getPhoneKind().equalsIgnoreCase(kind)){
 					add = false;
 					p.setPhoneNumber(number);
 				}
 			}
 			if(add){
-				IPhoneNumber p = new PhoneNumber();
+				PhoneNumber p = new PhoneNumber();
 				p.setPhoneKind(kind);
 				p.setPhoneNumber(number);
 				p.setContact(contact);
@@ -346,7 +342,7 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 		}
 	}
 
-	private boolean keep(String kind, String number, List<IPhoneNumber> phoneNumbers){
+	private boolean keep(String kind, String number, List<PhoneNumber> phoneNumbers){
 		if(number.isEmpty()){
 			return true;
 		}
@@ -354,7 +350,7 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 			return false;
 		}
 		for(Object o : phoneNumbers){
-			IPhoneNumber p = (IPhoneNumber) o;
+			PhoneNumber p = (PhoneNumber) o;
 			if(p.getPhoneKind().equalsIgnoreCase(kind) && 
 					(p.getPhoneNumber().equalsIgnoreCase(number) || (p.getPhoneNumber().contains(number)))){
 				return true;

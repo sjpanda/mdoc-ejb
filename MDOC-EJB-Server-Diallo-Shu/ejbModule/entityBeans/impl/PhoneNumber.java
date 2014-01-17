@@ -7,16 +7,13 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 
-import entityBeans.IContact;
-import entityBeans.IPhoneNumber;
-
 @Entity
-public class PhoneNumber implements IPhoneNumber {
+public class PhoneNumber {
 	private long id;
 	private int version;
 	private String phoneKind;
 	private String phoneNumber;
-	private IContact contact;
+	private Contact contact;
 	
 	public PhoneNumber(){}
 	
@@ -56,10 +53,10 @@ public class PhoneNumber implements IPhoneNumber {
 	}
 	
 	@ManyToOne
-	public IContact getContact(){
+	public Contact getContact(){
 		return contact;
 	}
-	public void setContact(IContact contact){
+	public void setContact(Contact contact){
 		this.contact = contact;
 	}
 }

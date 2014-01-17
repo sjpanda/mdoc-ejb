@@ -9,27 +9,24 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import sessionBeans.local.GestionAddressLocal;
 import sessionBeans.local.GestionContactLocal;
 import sessionBeans.local.GestionPhoneNumberLocal;
-import entityBeans.IAddress;
-import entityBeans.IContact;
-import entityBeans.IEntreprise;
-import entityBeans.IPhoneNumber;
+import entityBeans.impl.Address;
+import entityBeans.impl.Contact;
+import entityBeans.impl.Entreprise;
+import entityBeans.impl.PhoneNumber;
 
 public class ContactController {
 
 	private String numSiret;
-	private IContact contact;
+	private Contact contact;
 	private String HomePhone;
 	private String mobilePhone;
 	private String officePhone;
 	private String action;
-	private List<IContact> resultSearch;
+	private List<Contact> resultSearch;
 	private int versionContact;
 
 	@EJB(name="ContactBeanEntity")
@@ -64,12 +61,12 @@ public class ContactController {
 			}
 
 			Object[] result = gestionContactLocal.getContactById(idContact);
-			contact = (IContact)result[0];
-			if(contact instanceof IEntreprise){
-				numSiret = ((IEntreprise)contact).getNumSiret() + "";
+			contact = (Contact)result[0];
+			if(contact instanceof Entreprise){
+				numSiret = ((Entreprise)contact).getNumSiret() + "";
 			}
 			if (contact.getProfiles() != null) {
-				for (IPhoneNumber phoneNumber : contact.getProfiles()) {
+				for (PhoneNumber phoneNumber : contact.getProfiles()) {
 					if (phoneNumber.getPhoneKind().equalsIgnoreCase("home")) {
 						HomePhone = phoneNumber.getPhoneNumber();
 					}
@@ -105,7 +102,7 @@ public class ContactController {
 		String city = contact.getAddress().getCity();
 		String country = contact.getAddress().getCountry();
 
-		IAddress address;
+		Address address;
 		if(street.isEmpty() && zip.isEmpty() && city.isEmpty() && country.isEmpty()){
 			address = null;
 		} else {
@@ -116,21 +113,21 @@ public class ContactController {
 		String officepn = getOfficePhone();
 		String mobilepn = getMobilePhone();
 
-		Set<IPhoneNumber> profiles;
+		Set<PhoneNumber> profiles;
 		if(homepn.isEmpty() && officepn.isEmpty() && mobilepn.isEmpty()){
 			profiles = null;
 		} else {
-			profiles = new HashSet<IPhoneNumber>();
+			profiles = new HashSet<PhoneNumber>();
 			if(! homepn.isEmpty()){
-				IPhoneNumber home = gestionPhoneNumberLocal.instancePhoneNumber("home", homepn);
+				PhoneNumber home = gestionPhoneNumberLocal.instancePhoneNumber("home", homepn);
 				profiles.add(home);
 			}
 			if(! officepn.isEmpty()){
-				IPhoneNumber office = gestionPhoneNumberLocal.instancePhoneNumber("office", officepn);
+				PhoneNumber office = gestionPhoneNumberLocal.instancePhoneNumber("office", officepn);
 				profiles.add(office);
 			}
 			if(! mobilepn.isEmpty()){
-				IPhoneNumber mobile = gestionPhoneNumberLocal.instancePhoneNumber("mobile", mobilepn);
+				PhoneNumber mobile = gestionPhoneNumberLocal.instancePhoneNumber("mobile", mobilepn);
 				profiles.add(mobile);
 			}
 		}
@@ -187,7 +184,7 @@ public class ContactController {
 		String city = contact.getAddress().getCity();
 		String country = contact.getAddress().getCountry();
 
-		IAddress address = gestionAddressLocal.instanceAddress(street, city, zip, country);
+		Address address = gestionAddressLocal.instanceAddress(street, city, zip, country);
 
 		String homepn = getHomePhone();
 		String officepn = getOfficePhone();
@@ -215,11 +212,11 @@ public class ContactController {
 		this.action = action;
 	}
 
-	public List<IContact> getResultSearch() {
+	public List<Contact> getResultSearch() {
 		return resultSearch;
 	}
 
-	public void setResultSearch(List<IContact> resultSearch) {
+	public void setResultSearch(List<Contact> resultSearch) {
 		this.resultSearch = resultSearch;
 	}
 
@@ -231,11 +228,11 @@ public class ContactController {
 		this.officePhone = officePhone;
 	}
 
-	public IContact getContact() {
+	public Contact getContact() {
 		return contact;
 	}
 
-	public void setContact(IContact contact) {
+	public void setContact(Contact contact) {
 		this.contact = contact;
 	}
 

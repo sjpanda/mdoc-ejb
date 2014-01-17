@@ -2,13 +2,13 @@ package sessionBeans.local;
 
 import javax.ejb.Local;
 
-import entityBeans.IAddress;
+import entityBeans.impl.Address;
 
 @Local
 public interface GestionAddressLocal {
-	public IAddress instanceAddress();
+	public Address instanceAddress();
 	
-	public IAddress instanceAddress(String street, String city, String zip, String country);
+	public Address instanceAddress(String street, String city, String zip, String country);
 	
-	public IAddress getAddressById(long id);
+	public Address getAddressById(long id);
 }

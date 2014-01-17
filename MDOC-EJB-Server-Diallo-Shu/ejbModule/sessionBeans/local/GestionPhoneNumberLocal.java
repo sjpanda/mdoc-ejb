@@ -4,13 +4,13 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import entityBeans.IPhoneNumber;
+import entityBeans.impl.PhoneNumber;
 
 @Local
 public interface GestionPhoneNumberLocal {
-	public IPhoneNumber instancePhoneNumber(String phoneKind, String phoneNumber);
+	public PhoneNumber instancePhoneNumber(String phoneKind, String phoneNumber);
 	
-	public List<IPhoneNumber> getPhoneNumbersByIdContact(long idContact);
+	public List<PhoneNumber> getPhoneNumbersByIdContact(long idContact);
 	
 	public boolean deletePhoneNumber(long id);
 }

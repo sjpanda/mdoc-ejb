@@ -6,7 +6,6 @@ import javax.persistence.PersistenceContext;
 
 import sessionBeans.local.GestionAddressLocal;
 import sessionBeans.remote.GestionAddressRemote;
-import entityBeans.IAddress;
 import entityBeans.impl.Address;
 
 @Stateless(mappedName="AddressBeanEntity")
@@ -15,18 +14,18 @@ public class GestionAddressBean implements GestionAddressLocal, GestionAddressRe
 	@PersistenceContext
 	EntityManager em;
 
-	public IAddress instanceAddress(){		
+	public Address instanceAddress(){		
 		return  new Address();
 	}
 	
-	public IAddress instanceAddress(String street, String city, String zip, String country){		
+	public Address instanceAddress(String street, String city, String zip, String country){		
 		return  new Address(street, city, zip, country);
 	}
 
-	public IAddress getAddressById(long id){	
-		IAddress address = null;
+	public Address getAddressById(long id){	
+		Address address = null;
 		try{
-			address = em.find(IAddress.class, id);
+			address = em.find(Address.class, id);
 		} catch(Exception e){
 			e.printStackTrace();
 		}

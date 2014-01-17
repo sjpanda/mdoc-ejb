@@ -5,30 +5,30 @@ import java.util.Set;
 
 import javax.ejb.Remote;
 
-import entityBeans.IAddress;
-import entityBeans.IContact;
-import entityBeans.IContactGroup;
-import entityBeans.IPhoneNumber;
+import entityBeans.impl.Address;
+import entityBeans.impl.Contact;
+import entityBeans.impl.ContactGroup;
+import entityBeans.impl.PhoneNumber;
 
 @Remote
 public interface GestionContactRemote {
-	public boolean createContact(String fname, String lname, String email, IAddress address, Set<IPhoneNumber> profiles, int numSiret);
+	public boolean createContact(String fname, String lname, String email, Address address, Set<PhoneNumber> profiles, int numSiret);
 
-	public boolean updateContact(IContact c, String fname, String lname, String email, 
+	public boolean updateContact(Contact c, String fname, String lname, String email, 
 			String street, String zip, String city, String country, String home, String office, String mobile, int siretnum);
 
 	public boolean deleteContact(String id);
 
-	public List searchContact(String fname, String lname, String email, IAddress address,
+	public List searchContact(String fname, String lname, String email, Address address,
 			String home, String office, String mobile);
 
-	public IContact instanceContact();
+	public Contact instanceContact();
 	
 	public Object[] getContactById(String id);
 
-	public List<IContact> getAllContacts();
+	public List<Contact> getAllContacts();
 	
-	public List<IContactGroup> getContactGroupByIdContact(String idContact);
+	public List<ContactGroup> getContactGroupByIdContact(String idContact);
 	
 	public boolean generateContacts();
 }

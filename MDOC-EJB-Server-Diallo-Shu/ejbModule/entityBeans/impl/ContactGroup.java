@@ -9,15 +9,12 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Version;
 
-import entityBeans.IContact;
-import entityBeans.IContactGroup;
-
 @Entity
-public class ContactGroup implements IContactGroup {
+public class ContactGroup {
 	private long groupId;
 	private int version;
 	private String groupName;
-	private Set<IContact> contacts;
+	private Set<Contact> contacts;
 
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	public long getGroupId() {
@@ -43,10 +40,10 @@ public class ContactGroup implements IContactGroup {
 	}
 	
 	@ManyToMany(mappedBy = "books")
-	public Set<IContact> getContacts() {
+	public Set<Contact> getContacts() {
 		return contacts;
 	}
-	public void setContacts(Set<IContact> contacts) {
+	public void setContacts(Set<Contact> contacts) {
 		this.contacts = contacts;
 	}	
 }

@@ -13,22 +13,17 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Version;
 
-import entityBeans.IAddress;
-import entityBeans.IContact;
-import entityBeans.IContactGroup;
-import entityBeans.IPhoneNumber;
-
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-public class Contact implements IContact {
+public class Contact {
 	private long id;
 	private int version;
 	private String firstname;
 	private String lastname;
 	private String email;
-	private IAddress address;
-	private Set<IPhoneNumber> profiles;
-	private Set<IContactGroup> books;
+	private Address address;
+	private Set<PhoneNumber> profiles;
+	private Set<ContactGroup> books;
 
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	public long getId() {
@@ -68,26 +63,26 @@ public class Contact implements IContact {
 	}
 	
 	@OneToOne
-	public IAddress getAddress() {
+	public Address getAddress() {
 		return address;
 	}
-	public void setAddress(IAddress address) {
+	public void setAddress(Address address) {
 		this.address = address;
 	}
 	
 	@OneToMany(mappedBy = "contact")
-	public Set<IPhoneNumber> getProfiles() {
+	public Set<PhoneNumber> getProfiles() {
 		return profiles;
 	}
-	public void setProfiles(Set<IPhoneNumber> profiles) {
+	public void setProfiles(Set<PhoneNumber> profiles) {
 		this.profiles = profiles;
 	}
 	
 	@ManyToMany
-	public Set<IContactGroup> getBooks() {
+	public Set<ContactGroup> getBooks() {
 		return books;
 	}
-	public void setBooks(Set<IContactGroup> books) {
+	public void setBooks(Set<ContactGroup> books) {
 		this.books = books;
 	}
 }

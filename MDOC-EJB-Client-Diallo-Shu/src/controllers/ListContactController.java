@@ -10,12 +10,12 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 
 import sessionBeans.local.GestionContactLocal;
-import entityBeans.IContact;
+import entityBeans.impl.Contact;
 
 public class ListContactController {
 
-	private List<IContact> contacts;
-	private IContact contact;
+	private List<Contact> contacts;
+	private Contact contact;
 	private String action;
 
 	@EJB(name="ContactBeanEntity")
@@ -29,7 +29,7 @@ public class ListContactController {
 			action = params.get("action");
 		}
 
-		contacts = new ArrayList<IContact>();
+		contacts = new ArrayList<Contact>();
 		contacts = gestionContactLocal.getAllContacts();
 	}
 
@@ -44,20 +44,20 @@ public class ListContactController {
 		return null;
 	}
 
-	public List<IContact> getContacts() {
+	public List<Contact> getContacts() {
 		return contacts;
 	}
 
-	public void setContacts(List<IContact> contacts) {
+	public void setContacts(List<Contact> contacts) {
 		this.contacts = contacts;
 	}
 
 
-	public IContact getContact() {
+	public Contact getContact() {
 		return contact;
 	}
 
-	public void setContact(IContact contact) {
+	public void setContact(Contact contact) {
 		this.contact = contact;
 	}
 

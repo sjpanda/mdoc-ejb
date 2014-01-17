@@ -6,10 +6,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
 
-import entityBeans.IAddress;
-
 @Entity
-public class Address implements IAddress {
+public class Address {
 	private long id;
 	private int version;
 	private String street;

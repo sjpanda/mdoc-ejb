@@ -8,7 +8,6 @@ import javax.persistence.PersistenceContext;
 
 import sessionBeans.local.GestionPhoneNumberLocal;
 import sessionBeans.remote.GestionPhoneNumberRemote;
-import entityBeans.IPhoneNumber;
 import entityBeans.impl.PhoneNumber;
 
 @Stateless(mappedName="PhoneNumberBeanEntity")
@@ -17,13 +16,13 @@ public class GestionPhoneNumberBean implements GestionPhoneNumberLocal, GestionP
 	@PersistenceContext
 	EntityManager em;
 	
-	public IPhoneNumber instancePhoneNumber(String phoneKind, String phoneNumber){
+	public PhoneNumber instancePhoneNumber(String phoneKind, String phoneNumber){
 		return new PhoneNumber(phoneKind, phoneNumber);
 	}
 	
-	public List<IPhoneNumber> getPhoneNumbersByIdContact(long idContact){
+	public List<PhoneNumber> getPhoneNumbersByIdContact(long idContact){
 		try{
-			List<IPhoneNumber> contacts = em.createQuery("from PhoneNumber p where p.contact.id = " + idContact).getResultList();
+			List<PhoneNumber> contacts = em.createQuery("from PhoneNumber p where p.contact.id = " + idContact).getResultList();
 			if(contacts.size() <= 0){
 				return null;
 			}
@@ -36,7 +35,7 @@ public class GestionPhoneNumberBean implements GestionPhoneNumberLocal, GestionP
 	
 	public boolean deletePhoneNumber(long id){
 		try{
-			IPhoneNumber p = em.find(IPhoneNumber.class, id);
+			PhoneNumber p = em.find(PhoneNumber.class, id);
 			em.remove(p);
 
 			return true;
