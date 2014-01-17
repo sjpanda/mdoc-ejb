@@ -6,13 +6,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
-import sessionBeans.local.GestionContactGroupLocal;
-import sessionBeans.local.GestionContactLocal;
+import sessionBeans.remote.GestionAddressRemote;
+import sessionBeans.remote.GestionContactGroupRemote;
+import sessionBeans.remote.GestionContactRemote;
+import sessionBeans.remote.GestionPhoneNumberRemote;
 import entityBeans.impl.Contact;
 import entityBeans.impl.ContactGroup;
 
@@ -26,12 +29,17 @@ public class ContactGroupController {
 	private String action;
 	private String idContactGroup;
 
-	@EJB(name="ContactBeanEntity")
-	private GestionContactLocal gestionContactLocal;
-	@EJB(name="ContactGroupBeanEntity")
-	private GestionContactGroupLocal gestionContactGroupLocal;
+//	@EJB(name="ContactBeanEntity")
+//	private GestionContactLocal gestionContactLocal;
+//	@EJB(name="ContactGroupBeanEntity")
+//	private GestionContactGroupLocal gestionContactGroupLocal;
+	
+	private GestionContactRemote gestionContact = null;
+	private GestionContactGroupRemote gestionContactGroup = null;
 
-	public void init(ComponentSystemEvent event){		
+	public void init(ComponentSystemEvent event){	
+		initGestionBeans();
+		
 		FacesContext fc = FacesContext.getCurrentInstance();
 		Map<String,String> params = fc.getExternalContext().getRequestParameterMap();
 
@@ -43,7 +51,7 @@ public class ContactGroupController {
 		if(idContact != null){
 			System.out.println("idContact = " + idContact);
 
-			Object[] result = gestionContactLocal.getContactById(idContact);
+			Object[] result = gestionContact.getContactById(idContact);
 			contact = (Contact)result[0];
 			contactGroups = new ArrayList<ContactGroup>(contact.getBooks());
 
@@ -61,11 +69,11 @@ public class ContactGroupController {
 				}
 			}
 			else{
-				contacts = gestionContactGroupLocal.getContactsByIdContactGroup(idContactGroup);
+				contacts = gestionContactGroup.getContactsByIdContactGroup(idContactGroup);
 			}
 
 		}
-		contactGroup = gestionContactGroupLocal.instanceContactGroup();
+		contactGroup = gestionContactGroup.instanceContactGroup();
 	}
 
 	public String save(){
@@ -74,7 +82,7 @@ public class ContactGroupController {
 		String groupContactName = contactGroup.getGroupName();
 		String idContact = contact.getId()+"";
 
-		if(gestionContactGroupLocal.createContactGroup(groupContactName, idContact)){
+		if(gestionContactGroup.createContactGroup(groupContactName, idContact)){
 			contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correct", null));
 			MessageController.getCurrentMessage(false, "Contact group succesfully added", "Contact group has been added");			
 		}
@@ -83,7 +91,7 @@ public class ContactGroupController {
 			MessageController.getCurrentMessage(false, "Failed to Add Contact group", "Failure when adding contact group");	
 		}
 
-		Object[] result = gestionContactLocal.getContactById(idContact);
+		Object[] result = gestionContact.getContactById(idContact);
 		contact = (Contact)result[0];
 		contactGroups = new ArrayList<ContactGroup>(contact.getBooks());
 
@@ -109,7 +117,7 @@ public class ContactGroupController {
 			list[i]= listContact1.get(i);
 		}
 
-		if(gestionContactGroupLocal.addContact(list, idContactGroup)){
+		if(gestionContactGroup.addContact(list, idContactGroup)){
 			contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correct", null));
 			MessageController.getCurrentMessage(false, "Contacts succesfully added", "Contacts have been added");			
 		}
@@ -180,8 +188,8 @@ public class ContactGroupController {
 	private List getAllContactForAdd(String idContactGroup){
 		List contactsUnique = new ArrayList();
 
-		List contacts = gestionContactLocal.getAllContacts();
-		ContactGroup contactGroup = gestionContactGroupLocal.getContactGroupById(idContactGroup);
+		List contacts = gestionContact.getAllContacts();
+		ContactGroup contactGroup = gestionContactGroup.getContactGroupById(idContactGroup);
 		Set<Contact> contactsGroup = contactGroup.getContacts();
 
 		boolean existe = false;
@@ -199,6 +207,17 @@ public class ContactGroupController {
 		}
 
 		return contactsUnique;
+	}
+	
+	private void initGestionBeans(){
+		InitialContext context;
+		try {
+			context = new InitialContext();
+			gestionContact = (GestionContactRemote)context.lookup("ContactBeanEntity");
+			gestionContactGroup = (GestionContactGroupRemote)context.lookup("ContactGroupBeanEntity");
+		} catch (NamingException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

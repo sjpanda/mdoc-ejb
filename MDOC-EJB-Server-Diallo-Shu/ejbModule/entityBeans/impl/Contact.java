@@ -1,5 +1,7 @@
 package entityBeans.impl;
 
+import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -15,7 +17,8 @@ import javax.persistence.Version;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-public class Contact {
+public class Contact implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private long id;
 	private int version;
 	private String firstname;
@@ -24,6 +27,11 @@ public class Contact {
 	private Address address;
 	private Set<PhoneNumber> profiles;
 	private Set<ContactGroup> books;
+	
+	public Contact(){
+		profiles = new HashSet<PhoneNumber>();
+        books = new HashSet<ContactGroup>();
+	}
 
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	public long getId() {

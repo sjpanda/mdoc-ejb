@@ -1,5 +1,6 @@
 package entityBeans.impl;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -10,7 +11,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Version;
 
 @Entity
-public class ContactGroup {
+public class ContactGroup implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private long groupId;
 	private int version;
 	private String groupName;

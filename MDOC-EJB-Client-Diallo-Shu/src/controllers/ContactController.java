@@ -5,14 +5,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
-import sessionBeans.local.GestionAddressLocal;
-import sessionBeans.local.GestionContactLocal;
-import sessionBeans.local.GestionPhoneNumberLocal;
+import sessionBeans.remote.GestionAddressRemote;
+import sessionBeans.remote.GestionContactRemote;
+import sessionBeans.remote.GestionPhoneNumberRemote;
 import entityBeans.impl.Address;
 import entityBeans.impl.Contact;
 import entityBeans.impl.Entreprise;
@@ -29,18 +30,23 @@ public class ContactController {
 	private List<Contact> resultSearch;
 	private int versionContact;
 
-	@EJB(name="ContactBeanEntity")
-	private GestionContactLocal gestionContactLocal;
-	@EJB(name="AddressBeanEntity")
-	private GestionAddressLocal gestionAddressLocal;
-	@EJB(name="PhoneNumberBeanEntity")
-	private GestionPhoneNumberLocal gestionPhoneNumberLocal;
+//	@EJB(name="ContactBeanEntity")
+//	private GestionContactLocal gestionContact;
+//	@EJB(name="AddressBeanEntity")
+//	private GestionAddressLocal gestionAddress;
+//	@EJB(name="PhoneNumberBeanEntity")
+//	private GestionPhoneNumberLocal gestionPhoneNumber;
 
+	private GestionContactRemote gestionContact = null;
+	private GestionAddressRemote gestionAddress = null;
+	private GestionPhoneNumberRemote gestionPhoneNumber = null;
 
 	public ContactController(){
 	}
 
-	public void init(ComponentSystemEvent event){		
+	public void init(ComponentSystemEvent event){	
+		initGestionBeans();
+
 		FacesContext fc = FacesContext.getCurrentInstance();
 		Map<String,String> params = fc.getExternalContext().getRequestParameterMap();
 		numSiret = "";
@@ -49,9 +55,8 @@ public class ContactController {
 		}
 
 		if(action.equals("create") || action.equals("search")){
-
-			contact = gestionContactLocal.instanceContact();
-			contact.setAddress(gestionAddressLocal.instanceAddress());
+			contact = gestionContact.instanceContact();
+			contact.setAddress(gestionAddress.instanceAddress());
 			HomePhone = "";mobilePhone="";officePhone="";
 		}
 		else if(action.equals("update")){
@@ -60,7 +65,7 @@ public class ContactController {
 				return;
 			}
 
-			Object[] result = gestionContactLocal.getContactById(idContact);
+			Object[] result = gestionContact.getContactById(idContact);
 			contact = (Contact)result[0];
 			if(contact instanceof Entreprise){
 				numSiret = ((Entreprise)contact).getNumSiret() + "";
@@ -106,7 +111,7 @@ public class ContactController {
 		if(street.isEmpty() && zip.isEmpty() && city.isEmpty() && country.isEmpty()){
 			address = null;
 		} else {
-			address = gestionAddressLocal.instanceAddress(street, city, zip, country);
+			address = gestionAddress.instanceAddress(street, city, zip, country);
 		}
 
 		String homepn = getHomePhone();
@@ -119,21 +124,21 @@ public class ContactController {
 		} else {
 			profiles = new HashSet<PhoneNumber>();
 			if(! homepn.isEmpty()){
-				PhoneNumber home = gestionPhoneNumberLocal.instancePhoneNumber("home", homepn);
+				PhoneNumber home = gestionPhoneNumber.instancePhoneNumber("home", homepn);
 				profiles.add(home);
 			}
 			if(! officepn.isEmpty()){
-				PhoneNumber office = gestionPhoneNumberLocal.instancePhoneNumber("office", officepn);
+				PhoneNumber office = gestionPhoneNumber.instancePhoneNumber("office", officepn);
 				profiles.add(office);
 			}
 			if(! mobilepn.isEmpty()){
-				PhoneNumber mobile = gestionPhoneNumberLocal.instancePhoneNumber("mobile", mobilepn);
+				PhoneNumber mobile = gestionPhoneNumber.instancePhoneNumber("mobile", mobilepn);
 				profiles.add(mobile);
 			}
 		}
 
 		if(action.equals("create")){
-			if(gestionContactLocal.createContact(fname, lname, email, address, profiles, numberSiret)){
+			if(gestionContact.createContact(fname, lname, email, address, profiles, numberSiret)){
 				contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correct", null));
 				MessageController.getCurrentMessage(false, "Contact has been created", "Contact succesfully created");
 			} else {
@@ -143,7 +148,7 @@ public class ContactController {
 		}
 		else if(action.equals("update")){
 			if(versionContact == contact.getVersion()){
-				if(gestionContactLocal.updateContact(contact, fname, lname, email, street, zip, city, country, homepn, officepn, mobilepn, numberSiret)){
+				if(gestionContact.updateContact(contact, fname, lname, email, street, zip, city, country, homepn, officepn, mobilepn, numberSiret)){
 					contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correct", null));
 					MessageController.getCurrentMessage(false, "Contact succesfully updated", "Contact has been updated");
 				} else {
@@ -161,13 +166,16 @@ public class ContactController {
 
 	public String generateContacts(){
 		FacesContext contexte = FacesContext.getCurrentInstance();
-		if(gestionContactLocal.generateContacts()){
+		if(gestionContact == null){
+			initGestionBeans();
+		}
+		if(gestionContact.generateContacts()){
 			contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correct", null));
 			MessageController.getCurrentMessage(false, "Generate contact : Contacts succesfully added", "Contact has been added");			
 		}
 		else{
-			contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Incorrect", null));
-			MessageController.getCurrentMessage(false, "Generate contact", "Failed to generate contacts");	
+			contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Incorrect", null));
+			MessageController.getCurrentMessage(true, "Generate contact", "Failed to generate contacts");	
 		}
 
 		return null;
@@ -184,14 +192,14 @@ public class ContactController {
 		String city = contact.getAddress().getCity();
 		String country = contact.getAddress().getCountry();
 
-		Address address = gestionAddressLocal.instanceAddress(street, city, zip, country);
+		Address address = gestionAddress.instanceAddress(street, city, zip, country);
 
 		String homepn = getHomePhone();
 		String officepn = getOfficePhone();
 		String mobilepn = getMobilePhone();
 
 
-		resultSearch = gestionContactLocal.searchContact(fname, lname, email, address, homepn, officepn, mobilepn);
+		resultSearch = gestionContact.searchContact(fname, lname, email, address, homepn, officepn, mobilepn);
 		System.out.println("listResultat = " + resultSearch.size());
 		if(!resultSearch.isEmpty()){
 			return "result";
@@ -262,4 +270,17 @@ public class ContactController {
 	}
 
 
+	private void initGestionBeans(){
+		InitialContext context;
+		try {
+			context = new InitialContext();
+			gestionContact = (GestionContactRemote)context.lookup("ContactBeanEntity");
+			gestionAddress = (GestionAddressRemote)context.lookup("AddressBeanEntity");
+			gestionPhoneNumber = (GestionPhoneNumberRemote)context.lookup("PhoneNumberBeanEntity");
+		} catch (NamingException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 }

@@ -233,9 +233,13 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 			List<PhoneNumber> phoneNumbers = new ArrayList<PhoneNumber>();
 
 			for(int i=0; i<3; i++){
-				contacts.add(new Contact());
+				if(i == 0){
+					contacts.add(new Contact());
+				} else {
+					contacts.add(new Entreprise());
+				}
 				addresses.add(new Address());
-				contacts.get(1).setAddress(addresses.get(1));
+				contacts.get(i).setAddress(addresses.get(i));
 			}
 			
 			for(int i=1; i<=9; i++){
@@ -297,12 +301,14 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 			phoneNumbers.get(8).setPhoneNumber("773-338-7786");
 			
 			for(int i=0; i<3; i++){
+				em.persist(addresses.get(i));
 				em.persist(contacts.get(i));
 			}
 			
-			for(int i=0; i<=2; i++){
+			for(int i=0; i<3; i++){
 				for(int j=0; j<3; j++){
 					phoneNumbers.get(j+3*i).setContact(contacts.get(i));
+					System.out.println("i = " + i + ", j = " + j);
 					contacts.get(i).getProfiles().add(phoneNumbers.get(j+3*i));
 					em.persist(phoneNumbers.get(j+3*i));
 				}

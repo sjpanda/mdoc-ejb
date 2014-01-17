@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
-import sessionBeans.local.GestionContactLocal;
+import sessionBeans.remote.GestionContactRemote;
 import entityBeans.impl.Contact;
 
 public class ListContactController {
@@ -18,10 +19,14 @@ public class ListContactController {
 	private Contact contact;
 	private String action;
 
-	@EJB(name="ContactBeanEntity")
-	private GestionContactLocal gestionContactLocal;
+//	@EJB(name="ContactBeanEntity")
+//	private GestionContactLocal gestionContactLocal;
+	
+	private GestionContactRemote gestionContact = null;
 
 	public void init(ComponentSystemEvent event){		
+		initGestionBeans();
+		
 		FacesContext fc = FacesContext.getCurrentInstance();
 		Map<String,String> params = fc.getExternalContext().getRequestParameterMap();
 
@@ -30,13 +35,13 @@ public class ListContactController {
 		}
 
 		contacts = new ArrayList<Contact>();
-		contacts = gestionContactLocal.getAllContacts();
+		contacts = gestionContact.getAllContacts();
 	}
 
 	public String delete(){
 		FacesContext contexte = FacesContext.getCurrentInstance();
 		String id = contact.getId() + "";
-		if(gestionContactLocal.deleteContact(id)){
+		if(gestionContact.deleteContact(id)){
 			contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correct", null));
 		} else {
 			contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Incorrect", null));
@@ -69,5 +74,13 @@ public class ListContactController {
 		this.action = action;
 	}
 
-
+	private void initGestionBeans(){
+		InitialContext context;
+		try {
+			context = new InitialContext();
+			gestionContact = (GestionContactRemote)context.lookup("ContactBeanEntity");
+		} catch (NamingException e) {
+			e.printStackTrace();
+		}
+	}
 }
