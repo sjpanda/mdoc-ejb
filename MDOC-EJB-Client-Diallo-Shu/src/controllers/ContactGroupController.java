@@ -12,6 +12,7 @@ import javax.faces.event.ComponentSystemEvent;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import sessionBeans.remote.GestionAddressRemote;
 import sessionBeans.remote.GestionContactGroupRemote;
 import sessionBeans.remote.GestionContactRemote;
 import entityBeans.impl.Contact;
@@ -34,6 +35,7 @@ public class ContactGroupController {
 	
 	private GestionContactRemote gestionContact = null;
 	private GestionContactGroupRemote gestionContactGroup = null;
+	private GestionAddressRemote gestionAddress = null;
 
 	public void init(ComponentSystemEvent event){	
 		initGestionBeans();
@@ -52,7 +54,7 @@ public class ContactGroupController {
 //			Object[] result = gestionContact.getContactById(idContact);
 //			contact = (Contact)result[0];
 			
-			contact = gestionContact.getContactById(idContact);
+			contact = getContactById(idContact);
 			
 			contactGroups = new ArrayList<ContactGroup>(contact.getBooks());
 
@@ -95,7 +97,7 @@ public class ContactGroupController {
 //		Object[] result = gestionContact.getContactById(idContact);
 //		contact = (Contact)result[0];
 		
-		contact = gestionContact.getContactById(idContact);
+		contact = getContactById(idContact);
 		
 		contactGroups = new ArrayList<ContactGroup>(contact.getBooks());
 
@@ -219,9 +221,18 @@ public class ContactGroupController {
 			context = new InitialContext();
 			gestionContact = (GestionContactRemote)context.lookup("ContactBeanEntity");
 			gestionContactGroup = (GestionContactGroupRemote)context.lookup("ContactGroupBeanEntity");
+			gestionAddress = (GestionAddressRemote)context.lookup("AddressBeanEntity");
 		} catch (NamingException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private Contact getContactById(String id){
+		Contact contact = gestionContact.getContactById(id);
+		if(contact.getAddress() == null){
+			contact.setAddress(gestionAddress.instanceAddress());
+		}
+		return contact;
 	}
 
 }

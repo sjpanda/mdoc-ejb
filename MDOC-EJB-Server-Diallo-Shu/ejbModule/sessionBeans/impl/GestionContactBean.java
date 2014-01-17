@@ -9,6 +9,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.jboss.ws.tools.ant.SysProperty;
+
 import sessionBeans.local.GestionContactLocal;
 import sessionBeans.remote.GestionContactGroupRemote;
 import sessionBeans.remote.GestionContactRemote;
@@ -66,10 +68,15 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 			c.setFirstname(fname);
 			c.setLastname(lname);
 			c.setEmail(email);
+
+			if(c.getAddress() == null){
+				c.setAddress(new Address());
+			} 
 			c.getAddress().setStreet(street);
 			c.getAddress().setZip(zip);
 			c.getAddress().setCity(city);
 			c.getAddress().setCountry(country);
+			em.merge(c.getAddress());
 			checkAndAdd("home", home, c, c.getProfiles());
 			checkAndAdd("office", office, c, c.getProfiles());
 			checkAndAdd("mobile", mobile, c, c.getProfiles());
@@ -86,8 +93,57 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 				}
 			}
 
+			try{
+				em.persist(c.getAddress());
+			} catch (Exception e){
+				em.merge(c.getAddress());
+			}
 			em.merge(c);
+			return true;
+		} catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean updateContact(long id, String fname, String lname, String email, 
+			String street, String zip, String city, String country, String home, String office, String mobile, int siretnum){
+		try{
+			Contact c = em.find(Contact.class, id);
+			c.setFirstname(fname);
+			c.setLastname(lname);
+			c.setEmail(email);
 
+			if(c.getAddress() == null){
+				c.setAddress(new Address());
+			} 
+			c.getAddress().setStreet(street);
+			c.getAddress().setZip(zip);
+			c.getAddress().setCity(city);
+			c.getAddress().setCountry(country);
+			em.merge(c.getAddress());
+			checkAndAdd("home", home, c, c.getProfiles());
+			checkAndAdd("office", office, c, c.getProfiles());
+			checkAndAdd("mobile", mobile, c, c.getProfiles());
+
+			if(siretnum == -1){
+				if(c instanceof Entreprise){
+					return false;
+				}
+			} else {
+				if(c instanceof Entreprise){
+					((Entreprise)c).setNumSiret(siretnum);
+				} else {
+					return false;
+				}
+			}
+
+			try{
+				em.persist(c.getAddress());
+			} catch (Exception e){
+				em.merge(c.getAddress());
+			}
+			em.merge(c);
 			return true;
 		} catch(Exception e){
 			e.printStackTrace();
@@ -108,6 +164,9 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 			Contact c = em.find(Contact.class, idNum);
 			if(c == null){
 				return false;
+			}
+			for(PhoneNumber p : c.getProfiles()){
+				em.remove(p);
 			}
 			c.getProfiles().clear();
 
@@ -185,24 +244,24 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 			return null;
 		}
 	}
-	
+
 	public Contact instanceContact(){
 		return new Contact();
 	}
 
-//	public Object[] getContactById(String id){
-//		try{
-//			List contacts = em.createQuery("select c, a from Contact c, Address a where c.id = " + id + " and c.address= a").getResultList();
-//			if((contacts != null) && (contacts.size() != 0)){
-//				return (Object[]) contacts.get(0);
-//			}
-//			return null;
-//		} catch(Exception e){
-//			e.printStackTrace();
-//			return null;
-//		}
-//	}
-	
+	//	public Object[] getContactById(String id){
+	//		try{
+	//			List contacts = em.createQuery("select c, a from Contact c, Address a where c.id = " + id + " and c.address= a").getResultList();
+	//			if((contacts != null) && (contacts.size() != 0)){
+	//				return (Object[]) contacts.get(0);
+	//			}
+	//			return null;
+	//		} catch(Exception e){
+	//			e.printStackTrace();
+	//			return null;
+	//		}
+	//	}
+
 	public Contact getContactById(String id){
 		long idNum = -1;
 		try{
@@ -211,8 +270,13 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 			e.printStackTrace();
 			return null;
 		}
-		
-		return em.find(Contact.class, idNum);
+
+		Entreprise e = em.find(Entreprise.class, idNum);
+		if(e == null){
+			return em.find(Contact.class, idNum);
+		} else {
+			return e;
+		}
 	}
 
 	public List<Contact> getAllContacts(){
@@ -253,7 +317,7 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 				addresses.add(new Address());
 				contacts.get(i).setAddress(addresses.get(i));
 			}
-			
+
 			for(int i=1; i<=9; i++){
 				phoneNumbers.add(new PhoneNumber());
 			}
@@ -265,58 +329,58 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 			contacts.get(1).setFirstname("Future Life");
 			contacts.get(1).setEmail("contact@futurelife.com");
 			((Entreprise)contacts.get(1)).setNumSiret(999999999);
-			
+
 			contacts.get(2).setFirstname("Hello Mdoc");
 			contacts.get(2).setEmail("contact@hellomdoc.com");
 			((Entreprise)contacts.get(2)).setNumSiret(888888888);
-			
+
 			addresses.get(0).setStreet("5 Place Jussieu");
 			addresses.get(0).setCity("Paris");
 			addresses.get(0).setZip("75005");
 			addresses.get(0).setCountry("France");
-			
+
 			addresses.get(1).setStreet("221B Baker Street");
 			addresses.get(1).setCity("London");
 			addresses.get(1).setZip("NW16XE");
 			addresses.get(1).setCountry("England");
-			
+
 			addresses.get(2).setStreet("29 Main Street");
 			addresses.get(2).setCity("New York");
 			addresses.get(2).setZip("02138");
 			addresses.get(2).setCountry("USA");
-			
+
 			phoneNumbers.get(0).setPhoneKind("home");
 			phoneNumbers.get(0).setPhoneNumber("0189625412");
-			
+
 			phoneNumbers.get(1).setPhoneKind("office");
 			phoneNumbers.get(1).setPhoneNumber("0165971256");
-			
+
 			phoneNumbers.get(2).setPhoneKind("mobile");
 			phoneNumbers.get(2).setPhoneNumber("0624859715");
-			
+
 			phoneNumbers.get(3).setPhoneKind("home");
 			phoneNumbers.get(3).setPhoneNumber("0289758038");
-			
+
 			phoneNumbers.get(4).setPhoneKind("office");
 			phoneNumbers.get(4).setPhoneNumber("0245895924");
-			
+
 			phoneNumbers.get(5).setPhoneKind("mobile");
 			phoneNumbers.get(5).setPhoneNumber("07489254728");
-			
+
 			phoneNumbers.get(6).setPhoneKind("home");
 			phoneNumbers.get(6).setPhoneNumber("(914)246-8051");
-			
+
 			phoneNumbers.get(7).setPhoneKind("office");
 			phoneNumbers.get(7).setPhoneNumber("(516)712-6528");
-			
+
 			phoneNumbers.get(8).setPhoneKind("mobile");
 			phoneNumbers.get(8).setPhoneNumber("773-338-7786");
-			
+
 			for(int i=0; i<3; i++){
 				em.persist(addresses.get(i));
 				em.persist(contacts.get(i));
 			}
-			
+
 			for(int i=0; i<3; i++){
 				for(int j=0; j<3; j++){
 					phoneNumbers.get(j+3*i).setContact(contacts.get(i));

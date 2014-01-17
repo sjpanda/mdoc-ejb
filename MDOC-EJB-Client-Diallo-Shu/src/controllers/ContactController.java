@@ -65,12 +65,11 @@ public class ContactController {
 				return;
 			}
 
-			System.out.println(">>>>>>>>>>>>>>>> " + idContact);
 //			Object[] result = gestionContact.getContactById(idContact);
 //			contact = (Contact)result[0];
 			
-			contact = gestionContact.getContactById(idContact);
-			
+			contact = getContactById(idContact);
+						
 			if(contact instanceof Entreprise){
 				numSiret = ((Entreprise)contact).getNumSiret() + "";
 			}
@@ -99,7 +98,11 @@ public class ContactController {
 		if(! numSiret.isEmpty()){
 			try{
 				numberSiret = Integer.parseInt(numSiret);
-			} catch(NumberFormatException e) {}
+			} catch(NumberFormatException e) {
+				contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Incorrect", null));
+				MessageController.getCurrentMessage(true, "Failed to create contact", "Failure when creating contact");
+				return null;
+			}
 		}
 
 		String fname = contact.getFirstname();
@@ -152,7 +155,7 @@ public class ContactController {
 		}
 		else if(action.equals("update")){
 			//if(versionContact == contact.getVersion()){
-				if(gestionContact.updateContact(contact, fname, lname, email, street, zip, city, country, homepn, officepn, mobilepn, numberSiret)){
+				if(gestionContact.updateContact(contact.getId(), fname, lname, email, street, zip, city, country, homepn, officepn, mobilepn, numberSiret)){
 					contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correct", null));
 					MessageController.getCurrentMessage(false, "Contact succesfully updated", "Contact has been updated");
 				} else {
@@ -266,6 +269,10 @@ public class ContactController {
 	}
 
 	public String getNumSiret() {
+		if(contact instanceof Entreprise){
+			return ((Entreprise)contact).getNumSiret() + "";
+		}
+		
 		return numSiret;
 	}
 
@@ -286,5 +293,11 @@ public class ContactController {
 		}
 	}
 	
-	
+	private Contact getContactById(String id){
+		Contact contact = gestionContact.getContactById(id);
+		if(contact.getAddress() == null){
+			contact.setAddress(gestionAddress.instanceAddress());
+		}
+		return contact;
+	}
 }

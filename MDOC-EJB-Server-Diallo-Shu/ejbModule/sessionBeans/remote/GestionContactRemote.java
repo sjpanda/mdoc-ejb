@@ -16,6 +16,9 @@ public interface GestionContactRemote {
 
 	public boolean updateContact(Contact c, String fname, String lname, String email, 
 			String street, String zip, String city, String country, String home, String office, String mobile, int siretnum);
+	
+	public boolean updateContact(long id, String fname, String lname, String email, 
+			String street, String zip, String city, String country, String home, String office, String mobile, int siretnum);
 
 	public boolean deleteContact(String id);
 
