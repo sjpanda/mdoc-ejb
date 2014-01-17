@@ -39,7 +39,7 @@ public class GestionContactGroupBean implements GestionContactGroupLocal, Gestio
 
 			return true;
 		} catch(Exception e){
-			System.err.println(e.getMessage());
+			e.printStackTrace();
 			return false;
 		}
 	}

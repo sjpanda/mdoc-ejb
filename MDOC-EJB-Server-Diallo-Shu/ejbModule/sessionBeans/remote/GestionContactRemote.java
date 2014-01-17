@@ -24,7 +24,8 @@ public interface GestionContactRemote {
 
 	public Contact instanceContact();
 	
-	public Object[] getContactById(String id);
+	//public Object[] getContactById(String id);
+	public Contact getContactById(String id);
 
 	public List<Contact> getAllContacts();
 	

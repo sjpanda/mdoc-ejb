@@ -1,9 +1,11 @@
 package entityBeans.impl;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +20,10 @@ public class ContactGroup implements Serializable {
 	private String groupName;
 	private Set<Contact> contacts;
 
+	public ContactGroup(){
+		contacts = new HashSet<Contact>();
+	}
+	
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	public long getGroupId() {
 		return groupId;
@@ -41,7 +47,7 @@ public class ContactGroup implements Serializable {
 		this.groupName = groupName;
 	}
 	
-	@ManyToMany(mappedBy = "books")
+	@ManyToMany(mappedBy = "books", fetch = FetchType.EAGER)
 	public Set<Contact> getContacts() {
 		return contacts;
 	}

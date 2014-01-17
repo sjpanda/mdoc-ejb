@@ -86,7 +86,7 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 				}
 			}
 
-			em.persist(c);
+			em.merge(c);
 
 			return true;
 		} catch(Exception e){
@@ -190,17 +190,29 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 		return new Contact();
 	}
 
-	public Object[] getContactById(String id){
+//	public Object[] getContactById(String id){
+//		try{
+//			List contacts = em.createQuery("select c, a from Contact c, Address a where c.id = " + id + " and c.address= a").getResultList();
+//			if((contacts != null) && (contacts.size() != 0)){
+//				return (Object[]) contacts.get(0);
+//			}
+//			return null;
+//		} catch(Exception e){
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
+	
+	public Contact getContactById(String id){
+		long idNum = -1;
 		try{
-			List contacts = em.createQuery("select c, a from Contact c, Address a where c.id = " + id + " and c.address= a").getResultList();
-			if((contacts != null) && (contacts.size() != 0)){
-				return (Object[]) contacts.get(0);
-			}
-			return null;
-		} catch(Exception e){
+			idNum = Long.parseLong(id);
+		} catch(NumberFormatException e){
 			e.printStackTrace();
 			return null;
 		}
+		
+		return em.find(Contact.class, idNum);
 	}
 
 	public List<Contact> getAllContacts(){
@@ -308,7 +320,6 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 			for(int i=0; i<3; i++){
 				for(int j=0; j<3; j++){
 					phoneNumbers.get(j+3*i).setContact(contacts.get(i));
-					System.out.println("i = " + i + ", j = " + j);
 					contacts.get(i).getProfiles().add(phoneNumbers.get(j+3*i));
 					em.persist(phoneNumbers.get(j+3*i));
 				}

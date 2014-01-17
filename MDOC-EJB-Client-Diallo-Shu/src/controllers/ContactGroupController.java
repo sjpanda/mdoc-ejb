@@ -12,10 +12,8 @@ import javax.faces.event.ComponentSystemEvent;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import sessionBeans.remote.GestionAddressRemote;
 import sessionBeans.remote.GestionContactGroupRemote;
 import sessionBeans.remote.GestionContactRemote;
-import sessionBeans.remote.GestionPhoneNumberRemote;
 import entityBeans.impl.Contact;
 import entityBeans.impl.ContactGroup;
 
@@ -51,8 +49,11 @@ public class ContactGroupController {
 		if(idContact != null){
 			System.out.println("idContact = " + idContact);
 
-			Object[] result = gestionContact.getContactById(idContact);
-			contact = (Contact)result[0];
+//			Object[] result = gestionContact.getContactById(idContact);
+//			contact = (Contact)result[0];
+			
+			contact = gestionContact.getContactById(idContact);
+			
 			contactGroups = new ArrayList<ContactGroup>(contact.getBooks());
 
 		}
@@ -88,11 +89,14 @@ public class ContactGroupController {
 		}
 		else{
 			contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Incorrect", null));
-			MessageController.getCurrentMessage(false, "Failed to Add Contact group", "Failure when adding contact group");	
+			MessageController.getCurrentMessage(true, "Failed to Add Contact group", "Failure when adding contact group");	
 		}
 
-		Object[] result = gestionContact.getContactById(idContact);
-		contact = (Contact)result[0];
+//		Object[] result = gestionContact.getContactById(idContact);
+//		contact = (Contact)result[0];
+		
+		contact = gestionContact.getContactById(idContact);
+		
 		contactGroups = new ArrayList<ContactGroup>(contact.getBooks());
 
 		return null;

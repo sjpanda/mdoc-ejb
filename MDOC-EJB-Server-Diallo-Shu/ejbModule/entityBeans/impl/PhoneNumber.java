@@ -3,6 +3,7 @@ package entityBeans.impl;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -55,7 +56,7 @@ public class PhoneNumber implements Serializable {
 		this.phoneNumber = phoneNumber;
 	}
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	public Contact getContact(){
 		return contact;
 	}

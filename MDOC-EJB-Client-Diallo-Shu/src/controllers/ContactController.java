@@ -65,8 +65,12 @@ public class ContactController {
 				return;
 			}
 
-			Object[] result = gestionContact.getContactById(idContact);
-			contact = (Contact)result[0];
+			System.out.println(">>>>>>>>>>>>>>>> " + idContact);
+//			Object[] result = gestionContact.getContactById(idContact);
+//			contact = (Contact)result[0];
+			
+			contact = gestionContact.getContactById(idContact);
+			
 			if(contact instanceof Entreprise){
 				numSiret = ((Entreprise)contact).getNumSiret() + "";
 			}
@@ -147,7 +151,7 @@ public class ContactController {
 			}
 		}
 		else if(action.equals("update")){
-			if(versionContact == contact.getVersion()){
+			//if(versionContact == contact.getVersion()){
 				if(gestionContact.updateContact(contact, fname, lname, email, street, zip, city, country, homepn, officepn, mobilepn, numberSiret)){
 					contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correct", null));
 					MessageController.getCurrentMessage(false, "Contact succesfully updated", "Contact has been updated");
@@ -155,10 +159,10 @@ public class ContactController {
 					contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Incorrect", null));
 					MessageController.getCurrentMessage(true, "Failed to update contact", "Failure when updating contact");
 				}
-			}else{
-				contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Incorrect", null));
-				MessageController.getCurrentMessage(true, "Failed to update contact", "Contact is modified in the meantime, please reload the page to continue the modification");
-			}
+//			}else{
+//				contexte.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Incorrect", null));
+//				MessageController.getCurrentMessage(true, "Failed to update contact", "Contact is modified in the meantime, please reload the page to continue the modification");
+//			}
 		}
 
 		return null;
