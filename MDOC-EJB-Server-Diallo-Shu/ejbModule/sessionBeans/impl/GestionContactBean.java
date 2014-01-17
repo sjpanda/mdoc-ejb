@@ -187,13 +187,11 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 		}
 	}
 
-	public List searchContact(String fname, String lname, String email, Address address,
+	public List<Contact> searchContact(String fname, String lname, String email, Address address,
 			String home, String office, String mobile){
 		try{
 			StringBuffer s = new StringBuffer();
-
-			s.append("select c, a from Contact c, Address a where c.address = a ");
-
+			s.append("select c from Contact c where c.id = c.id ");
 			if(! fname.isEmpty()){
 				s.append("and c.firstname like '%" + fname + "%' ");
 			}
@@ -218,7 +216,7 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 			System.out.println("Query : " + s.toString());
 
 			Query query = em.createQuery(s.toString());
-			List contacts = query.getResultList();
+			List<Contact> contacts = query.getResultList();
 
 			if(home.isEmpty() && office.isEmpty() && mobile.isEmpty()){
 				return contacts;
@@ -229,7 +227,7 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 			GestionPhoneNumberRemote gestionPhoneNumberRemote = new GestionPhoneNumberBean();
 
 			for(int i=0; i<contacts.size(); i++){
-				Contact c = (Contact)(((Object[])contacts.get(i))[0]);
+				Contact c = (Contact)(contacts.get(i));
 
 				List<PhoneNumber> pns = gestionPhoneNumberRemote.getPhoneNumbersByIdContact(c.getId());
 				if((! keep("home", home, pns)) || (! keep("office", office, pns)) || (! keep("mobile", mobile, pns))){
@@ -237,7 +235,9 @@ public class GestionContactBean implements GestionContactLocal, GestionContactRe
 				}
 			}
 
+			System.out.println(">>>>>>>>>>>>>>>>>>>> toto 9 >>>>>>>>>>>>>>>>>");
 			contacts.removeAll(toRemove);
+			System.out.println(">>>>>>>>>>>>>>>>>>>> toto 10 >>>>>>>>>>>>>>>>>");
 			return contacts;
 		} catch (Exception e){
 			e.printStackTrace();
