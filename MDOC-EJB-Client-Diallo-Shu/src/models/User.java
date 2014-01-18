@@ -68,7 +68,7 @@ public class User {
 	public String logout(){
 		initGestionBeans();
 		gestionLogin.logOut();
-		//Sender.publish("See you server");
+		Sender.publish("See you server");
 		return "success";
 	}
 

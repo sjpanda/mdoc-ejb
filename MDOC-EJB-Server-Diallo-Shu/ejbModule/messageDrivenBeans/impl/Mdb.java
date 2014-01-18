@@ -7,14 +7,14 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
-@MessageDriven(activationConfig = {
-		@ActivationConfigProperty(
-			propertyName = "destination",
-			propertyValue = "topic_rigolo"),
-		@ActivationConfigProperty(
-			propertyName = "destinationType",
-			propertyValue = "javax.jms.Topic")})
+@MessageDriven(
+		activationConfig = {  
+				@ActivationConfigProperty(propertyName="destinationType",propertyValue="javax.jms.Queue"),  
+				@ActivationConfigProperty(propertyName="destination",propertyValue="queue/myqueue")  
+		}  
+		)
 public class Mdb implements MessageListener {
+	public Mdb (){}
 
 	@Override
 	public void onMessage(Message inMessage) {
