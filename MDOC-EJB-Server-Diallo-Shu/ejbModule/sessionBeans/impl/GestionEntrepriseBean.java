@@ -8,7 +8,7 @@ import sessionBeans.local.GestionEntrepriseLocal;
 import sessionBeans.remote.GestionEntrepriseRemote;
 import entityBeans.impl.Entreprise;
 
-@Stateless(mappedName="EntrepriseBeanEntity")
+@Stateless(mappedName="EntrepriseBean")
 public class GestionEntrepriseBean implements GestionEntrepriseLocal, GestionEntrepriseRemote{
 	
 	@PersistenceContext

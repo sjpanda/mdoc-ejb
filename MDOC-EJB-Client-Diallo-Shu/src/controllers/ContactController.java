@@ -285,9 +285,9 @@ public class ContactController {
 		InitialContext context;
 		try {
 			context = new InitialContext();
-			gestionContact = (GestionContactRemote)context.lookup("ContactBeanEntity");
-			gestionAddress = (GestionAddressRemote)context.lookup("AddressBeanEntity");
-			gestionPhoneNumber = (GestionPhoneNumberRemote)context.lookup("PhoneNumberBeanEntity");
+			gestionContact = (GestionContactRemote)context.lookup("ContactBean");
+			gestionAddress = (GestionAddressRemote)context.lookup("AddressBean");
+			gestionPhoneNumber = (GestionPhoneNumberRemote)context.lookup("PhoneNumberBean");
 		} catch (NamingException e) {
 			e.printStackTrace();
 		}

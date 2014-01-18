@@ -78,7 +78,7 @@ public class ListContactController {
 		InitialContext context;
 		try {
 			context = new InitialContext();
-			gestionContact = (GestionContactRemote)context.lookup("ContactBeanEntity");
+			gestionContact = (GestionContactRemote)context.lookup("ContactBean");
 		} catch (NamingException e) {
 			e.printStackTrace();
 		}

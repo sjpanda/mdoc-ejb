@@ -21,7 +21,7 @@ import entityBeans.impl.ContactGroup;
 import entityBeans.impl.Entreprise;
 import entityBeans.impl.PhoneNumber;
 
-@Stateless(mappedName="ContactBeanEntity")
+@Stateless(mappedName="ContactBean")
 public class GestionContactBean implements GestionContactLocal, GestionContactRemote {
 
 	@PersistenceContext

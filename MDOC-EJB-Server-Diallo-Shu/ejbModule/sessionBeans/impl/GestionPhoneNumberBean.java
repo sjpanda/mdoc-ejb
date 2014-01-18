@@ -10,7 +10,7 @@ import sessionBeans.local.GestionPhoneNumberLocal;
 import sessionBeans.remote.GestionPhoneNumberRemote;
 import entityBeans.impl.PhoneNumber;
 
-@Stateless(mappedName="PhoneNumberBeanEntity")
+@Stateless(mappedName="PhoneNumberBean")
 public class GestionPhoneNumberBean implements GestionPhoneNumberLocal, GestionPhoneNumberRemote {
 
 	@PersistenceContext

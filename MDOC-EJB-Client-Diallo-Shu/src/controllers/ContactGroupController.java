@@ -219,9 +219,9 @@ public class ContactGroupController {
 		InitialContext context;
 		try {
 			context = new InitialContext();
-			gestionContact = (GestionContactRemote)context.lookup("ContactBeanEntity");
-			gestionContactGroup = (GestionContactGroupRemote)context.lookup("ContactGroupBeanEntity");
-			gestionAddress = (GestionAddressRemote)context.lookup("AddressBeanEntity");
+			gestionContact = (GestionContactRemote)context.lookup("ContactBean");
+			gestionContactGroup = (GestionContactGroupRemote)context.lookup("ContactGroupBean");
+			gestionAddress = (GestionAddressRemote)context.lookup("AddressBean");
 		} catch (NamingException e) {
 			e.printStackTrace();
 		}

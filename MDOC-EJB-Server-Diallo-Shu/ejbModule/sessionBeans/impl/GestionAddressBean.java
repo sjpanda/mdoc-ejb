@@ -8,7 +8,7 @@ import sessionBeans.local.GestionAddressLocal;
 import sessionBeans.remote.GestionAddressRemote;
 import entityBeans.impl.Address;
 
-@Stateless(mappedName="AddressBeanEntity")
+@Stateless(mappedName="AddressBean")
 public class GestionAddressBean implements GestionAddressLocal, GestionAddressRemote {
 
 	@PersistenceContext

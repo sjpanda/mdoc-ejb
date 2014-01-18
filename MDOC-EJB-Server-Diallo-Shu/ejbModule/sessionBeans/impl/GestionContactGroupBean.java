@@ -13,7 +13,7 @@ import sessionBeans.remote.GestionContactRemote;
 import entityBeans.impl.Contact;
 import entityBeans.impl.ContactGroup;
 
-@Stateless(mappedName="ContactGroupBeanEntity")
+@Stateless(mappedName="ContactGroupBean")
 public class GestionContactGroupBean implements GestionContactGroupLocal, GestionContactGroupRemote {
 
 	@PersistenceContext
