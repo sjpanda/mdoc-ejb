@@ -3,6 +3,8 @@ package models;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import messageSenders.Sender;
+
 import sessionBeans.remote.GestionLoginRemote;
 
 public class User {
@@ -57,12 +59,8 @@ public class User {
 		//		}
 
 		if (gestionLogin.logIn()){
-			setConnected(true);
 			return "success";
 		} else {
-			setName("");
-			setPassword("");
-			setConnected(false);
 			return "failed";
 		}
 	}
@@ -70,9 +68,7 @@ public class User {
 	public String logout(){
 		initGestionBeans();
 		gestionLogin.logOut();
-		setName("");
-		setPassword("");
-		setConnected(false);
+		//Sender.publish("See you server");
 		return "success";
 	}
 
